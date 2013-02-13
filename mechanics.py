@@ -1,11 +1,4 @@
 
-# Should be moved to surpervisor.py
-def draw_board(board):
-    s = ''
-    for i in range(0,64,8):
-        s += board[i:i+8]
-        s += '\n'
-    print(s)
 
 
 def get_direction(player):
@@ -255,23 +248,5 @@ def winner(board):
 
 
 if __name__ == "__main__":
-
-    #board = 24 * ' ' + 'r ' * 4 + ' b' * 2 + 28 * ' '
-    #print [i for i,e in enumerate(board) if e.strip()]
-    #draw_board(board)
-
-    # Run unit tests
     import doctest
     doctest.testmod()
-
-#    #print initialize()
-#    board = initialize()
-#    draw_board(board)
-#    print valid_capture_moves('r', board)
-#    board2 = transition((21, 28), board)
-#    board3 = transition((46, 37), board2)
-#    print valid_capture_moves('r', board3)
-#
-#    #board3 = transition((46, 53), board2)
-#    draw_board(board3)
-    
