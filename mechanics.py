@@ -8,6 +8,25 @@ def draw_board(board):
     print s
 
 
+def get_direction(player):
+    """
+    >>> get_direction('R')
+    
+    >>> get_direction('r')
+    1
+    >>> get_direction('b')
+    -1
+    """
+
+    if is_king(player):
+        return None
+    elif player == 'r':
+        return 1
+    elif player == 'b':
+        return -1
+
+
+
 
 def get_opponent(p):
     """
@@ -131,6 +150,8 @@ def valid_capture_moves(player, board, direction=None):
     []
     """
 
+
+
     opponent = get_opponent(player)    
     positions = [i for i, char in enumerate(board) if char == player]
 
@@ -143,11 +164,32 @@ def valid_capture_moves(player, board, direction=None):
             if board[end_p] == ' ' and board[jumped_p] == opponent:
                 t = (position, end_p)
                 captures.append(t)
+
+
             
     return captures
 
 
 def move_legal(move, board):
+    """
+    Verify that a move is legal.
+
+    >>> board = 24 * ' ' + 'r ' * 4 + ' b' * 2 + 28 * ' '    
+    >>> move_legal((33, 24), board) # Move onto opponent.
+    False
+    >>> move_legal((0, 9), board) # Move empty cell.
+    False
+    >>> move_legal((30, 39), board) # Non-capture when capture is forced.
+    False
+    >>> move_legal((28, 37), board) # Non-capture when capture is forced.
+    False
+    >>> move_legal((33, 19), board) # Test valid capture.
+    True
+
+    # Add additional tests for the case where captures are not forced.
+
+    """
+
     start_position, end_position = move
     start_cell = board[start_position]
     end_cell = board[end_position]
@@ -159,32 +201,24 @@ def move_legal(move, board):
         return False
 
     player = start_cell.lower()
-
-    if is_king(start_cell):
-        direction = None
-    elif start_cell == 'r':
-        direction = 1
-    elif start_cell == 'b':
-        direction = 1
-
+    direction = get_direction(start_cell)
 
     # Check for forced jumps.
     valid_captures = valid_capture_moves(player, board, direction)
-    if valid_captures and move not in valid_captures:
-        return False
-
-    if end_position in legal_moves(start_position, direction):
-        return True
-
-    if end_position in capture_moves(start_position, direction):
-        in_between_cell = (end_position + start_position) / 2
-        between_cell = board[in_between_cell]
-        if between_cell == opponent(start_cell):
-            return True
-        
-    return False
+    if valid_captures:
+        return move in valid_captures
+    else:
+        return end_position in moves(start_position, direction)
 
 def transition(move, board):
+    """
+    >>> board = 'r' + 63 * ' '
+    >>> transition((0, 9), board)[0]
+    ' '
+    >>> transition((0, 9), board)[9]
+    'r'
+    """
+
     start_p, end_p = move
     distance = abs(start_p - end_p)
 
@@ -218,6 +252,10 @@ def winner(board):
 
 
 if __name__ == "__main__":
+
+    #board = 24 * ' ' + 'r ' * 4 + ' b' * 2 + 28 * ' '
+    #print [i for i,e in enumerate(board) if e.strip()]
+    #draw_board(board)
 
     # Run unit tests
     import doctest
