@@ -10,20 +10,43 @@ def draw_board(board):
 
 
 def get_opponent(p):
+    """
+    Returns char symbol for opponent.
+
+    >>> get_opponent('R')
+    'b'
+    >>> get_opponent('b')
+    'r'
+    >>> get_opponent('ew')
+    """
+    
     if p in 'Rr':
         return 'b'
     elif p in 'Bb':
         return 'r'
     else:
-        raise
+        return None
 
 def is_king(char):
+    """
+    >>> is_king('r')
+    False
+    >>> is_king('B')
+    True
+    """
     return not char.islower()
 
 
 def initialize():
     """
     Initial board state.
+
+    >>> initialize()[23]
+    'r'
+    >>> initialize()[28]
+    ' '
+    >>> initialize()[62]
+    'b'
     """
 
     rx = ' r r r rr r r r  r r r r'
@@ -35,6 +58,15 @@ def initialize():
 def moves(position, direction):
     """
     All potential non-capture moves (1 diagonal square away); no collision detection
+
+    >>> sorted(moves(28, None))
+    [19, 21, 35, 37]
+    >>> sorted(moves(31, None))
+    [22, 38]
+    >>> sorted(moves(63, 1))
+    []
+    >>> sorted(moves(63, -1))
+    [54]
     """
 
     if position % 8 == 0:
@@ -58,6 +90,15 @@ def moves(position, direction):
 def capture_moves(position, direction):
     """
     All potential capture moves (i.e. moves two diagonal squares away; no collision detection
+
+    >>> sorted(capture_moves(28, None))
+    [10, 14, 42, 46]
+    >>> sorted(capture_moves(31, None))
+    [13, 45]
+    >>> sorted(capture_moves(63, 1))
+    []
+    >>> sorted(capture_moves(63, -1))
+    [45]
     """
 
     if position % 8 in (0,1):
@@ -81,6 +122,13 @@ def capture_moves(position, direction):
 def valid_capture_moves(player, board, direction=None):
     """
     Capture moves that will actually result in a capture.
+
+    >>> valid_capture_moves('r', 'r' + 8*' ' + 'b' + 54 * ' ', 1)
+    [(0, 18)]
+    >>> valid_capture_moves('r', 'r' + 8*' ' + 'b' + 54 * ' ', -1)
+    []
+    >>> valid_capture_moves('b', 'r' + 8*' ' + 'b' + 54 * ' ', -1)
+    []
     """
 
     opponent = get_opponent(player)    
@@ -154,6 +202,13 @@ def transition(move, board):
 
 
 def winner(board):
+    """
+    >>> winner(64 * 'b')
+    'b'
+    >>> winner('r' + 64 * ' ')
+    'r'
+    """
+
     if 'r' not in board:
         return 'b'
     elif 'b' not in board:
@@ -163,14 +218,19 @@ def winner(board):
 
 
 if __name__ == "__main__":
-    #print initialize()
-    board = initialize()
-    draw_board(board)
-    print valid_capture_moves('r', board)
-    board2 = transition((21, 28), board)
-    board3 = transition((46, 37), board2)
-    print valid_capture_moves('r', board3)
 
-    #board3 = transition((46, 53), board2)
-    draw_board(board3)
+    # Run unit tests
+    import doctest
+    doctest.testmod()
+
+#    #print initialize()
+#    board = initialize()
+#    draw_board(board)
+#    print valid_capture_moves('r', board)
+#    board2 = transition((21, 28), board)
+#    board3 = transition((46, 37), board2)
+#    print valid_capture_moves('r', board3)
+#
+#    #board3 = transition((46, 53), board2)
+#    draw_board(board3)
     
