@@ -1,6 +1,10 @@
 
-
-
+def draw_board(board):
+    s = ''
+    for i in range(0,64,8):
+        s += board[i:i+8]
+        s += '\n'
+    print s
 
 def initialize():
     """
@@ -12,18 +16,10 @@ def initialize():
 
     return rx + ' ' * 16 + bx
 
-def draw_board(board):
-    s = ''
-    for i in range(0,64,8):
-        s += board[i:i+8]
-        s += '\n'
-    print s
-        
-
-def is_queen(char):
+def is_king(char):
     return not char.islower()
 
-def legal_moves(position, direction):
+def men_moves(position, direction):
 
     if direction == 1:
         if position % 8 == 0:
@@ -40,6 +36,28 @@ def legal_moves(position, direction):
             return [position - 9]
         else:
             return [position - 7, position - 9]
+
+def men_jump_moves(position, direction):
+
+    if direction == 1:
+        if position % 8 in (0, 1):
+            return [position + 18]
+
+        elif position % 8 in (6, 7):
+            return [position + 14]
+
+        else:
+          return [position + 14, position + 18]
+
+    elif direction == -1:
+        if position % 8 in (0, 1):
+            return [position - 14]
+
+        elif position % 8 in (6, 7):
+            return [position - 18]
+
+        else:
+          return [position - 14, position - 18]
 
 
 def king_moves(position):
@@ -63,31 +81,6 @@ def king_jump_moves(position):
 
     return [e for e in moves if 0 <= e <= 63]
 
-
-def jump_moves(position, direction):
-
-    if direction == 1:
-        if position % 8 in (0, 1):
-            return [position + 18]
-
-        elif position % 8 in (6, 7):
-            return [position + 14]
-
-        else:
-          return [position + 14, position + 18]
-
-    elif direction == -1:
-        if position % 8 in (0, 1):
-            return [position - 14]
-
-        elif position % 8 in (6, 7):
-            return [position - 18]
-
-        else:
-          return [position - 14, position - 18]
-
-
-
 def opponent(p):
     if p == 'r':
         return 'b'
@@ -95,7 +88,6 @@ def opponent(p):
         return 'r'
     else:
         raise
-
 
 def move_legal(move, board):
     start_position, end_position = move
@@ -126,7 +118,6 @@ def move_legal(move, board):
         
     return False
 
-
 def transition(move, board):
     start_p, end_p = move
     distance = abs(start_p - end_p)
@@ -151,7 +142,6 @@ def winner(board):
         return 'r'
     else:
         return None
-
 
 
 if __name__ == "__main__":
