@@ -7,6 +7,20 @@ def draw_board(board):
         s += '\n'
     print s
 
+
+
+def get_opponent(p):
+    if p in 'Rr':
+        return 'b'
+    elif p in 'Bb':
+        return 'r'
+    else:
+        raise
+
+def is_king(char):
+    return not char.islower()
+
+
 def initialize():
     """
     Initial board state.
@@ -17,54 +31,8 @@ def initialize():
 
     return rx + ' ' * 16 + bx
 
-def is_king(char):
-    return not char.islower()
 
-def men_moves(position, direction):
-
-    if direction == 1:
-        if position % 8 == 0:
-            moves = [position + 9]
-        elif position % 8 == 7:
-            moves = [position + 7]
-        else:
-            moves = [position + 7, position + 9]
-        
-    elif direction == -1:
-        if position % 8 == 0:
-            moves = [position - 7]
-        elif position % 8 == 7:
-            moves = [position - 9]
-        else:
-            moves = [position - 7, position - 9]
-
-    return [e for e in moves if 0 <= e <= 63]
-
-def men_jump_moves(position, direction):
-
-    if direction == 1:
-        if position % 8 in (0, 1):
-            moves = [position + 18]
-
-        elif position % 8 in (6, 7):
-            moves = [position + 14]
-
-        else:
-            moves = [position + 14, position + 18]
-
-    elif direction == -1:
-        if position % 8 in (0, 1):
-            moves = [position - 14]
-
-        elif position % 8 in (6, 7):
-            moves =  [position - 18]
-
-        else:
-            moves = [position - 14, position - 18]
-
-    return [e for e in moves if 0 <= e <= 63]
-
-def king_moves(position):
+def moves(position, direction):
     if position % 8 == 0:
         moves = [position + 9, position - 7]
     elif position % 8 == 7:
@@ -72,10 +40,18 @@ def king_moves(position):
     else:
         moves = [position + 7, position + 9, position - 7, position - 9]
 
-    return [e for e in moves if 0 <= e <= 63]
+    moves = [e for e in moves if 0 <= e <= 63]
+
+    if direction == 1:
+        return [e for e in moves if e > position]
+    elif direction == -1:
+        return [e for e in moves if e < position]
+    else:
+        return moves
+    
 
 
-def king_jump_moves(position):
+def capture_moves(position, direction):
     if position % 8 in (0,1):
         moves = [position + 18, position - 14]
     elif position % 8 in (6,7):
@@ -83,17 +59,40 @@ def king_jump_moves(position):
     else:
         moves = [position + 14, position + 18, position - 14, position - 18]
 
-    return [e for e in moves if 0 <= e <= 63]
+    moves = [e for e in moves if 0 <= e <= 63]
 
-def opponent(p):
-    if p == 'r':
-        return 'b'
-    elif p == 'b':
-        return 'r'
+    if direction == 1:
+        return [e for e in moves if e > position]
+    elif direction == -1:
+        return [e for e in moves if e < position]
     else:
-        raise
+        return moves
 
-def player_must_capture(player, board):
+
+
+def valid_capture_moves(player, board, direction=None):
+    """
+    Capture moves that will actually result in a capture.
+    """
+    
+    positions = [i for i, char in enumerate(board) if char == player]
+    opponent = get_opponent(player)
+
+
+    captures = []
+    
+    for position in positions:
+        potential_captures = capture_moves(position, direction)
+        if position == 280:
+            import pdb; pdb.set_trace()
+
+        for end_p in potential_captures:
+            jumped_p = (position + end_p) / 2
+            if board[end_p] == ' ' and board[jumped_p] == opponent:
+                captures.append(end_p)
+            
+    return captures
+
 
 def move_legal(move, board):
     start_position, end_position = move
@@ -116,7 +115,7 @@ def move_legal(move, board):
     if end_position in legal_moves(start_position, direction):
         return True
 
-    if end_position in jump_moves(start_position, direction):
+    if end_position in capture_moves(start_position, direction):
         in_between_cell = (end_position + start_position) / 2
         between_cell = board[in_between_cell]
         if between_cell == opponent(start_cell):
@@ -133,7 +132,7 @@ def transition(move, board):
 
 
     if distance > 9:
-        in_between = (start_position + end_position) / 2
+        in_between = (start_p + end_p) / 2
         board_list[in_between] = ' '
 
     return ''.join(board_list)
@@ -154,6 +153,11 @@ if __name__ == "__main__":
     #print initialize()
     board = initialize()
     draw_board(board)
-    board2 = transition((1, 9), board)
-    draw_board(board2)
+    print valid_capture_moves('r', board)
+    board2 = transition((21, 28), board)
+    board3 = transition((46, 37), board2)
+    print valid_capture_moves('r', board3)
+
+    #board3 = transition((46, 53), board2)
+    draw_board(board3)
     
