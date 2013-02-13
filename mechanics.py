@@ -5,7 +5,7 @@ def draw_board(board):
     for i in range(0,64,8):
         s += board[i:i+8]
         s += '\n'
-    print s
+    print(s)
 
 
 def get_direction(player):
@@ -160,7 +160,10 @@ def valid_capture_moves(player, board, direction=None):
     for position in positions:
         potential_captures = capture_moves(position, direction)
         for end_p in potential_captures:
-            jumped_p = (position + end_p) / 2
+            jumped_p = int((position + end_p) / 2) # jumped_p should always be an integer
+            if type(jumped_p) != int:
+                import pdb; pdb.set_trace()
+
             if board[end_p] == ' ' and board[jumped_p] == opponent:
                 t = (position, end_p)
                 captures.append(t)
@@ -227,8 +230,8 @@ def transition(move, board):
 
 
     if distance > 9:
-        in_between = (start_p + end_p) / 2
-        board_list[in_between] = ' '
+        jumped_p = int((start_p + end_p) / 2)
+        board_list[jumped_p] = ' '
 
     return ''.join(board_list)
         
