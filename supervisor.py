@@ -1,6 +1,9 @@
 
+from server import start, get_move, send_board 
 from mechanics import move_legal, transition, initialize, winner
 
+HOST = '127.0.0.1'
+PORT = 1060
 
 def draw_board(board):
     s = ''
@@ -9,23 +12,23 @@ def draw_board(board):
         s += '\n'
     print(s)
 
-
-
 def main():
-    pass
+    player1, player2 = start(HOST, PORT)
+    board = initialize()
+    player1s_turn = True
+    game_over = False
 
+    while not game_over:
+        if player1s_turn:
+            send_board(player1, board)
+            move = get_move(player1)
+        else
+            send_board(player2, board)
+            move = get_move(player2)
 
-def start_game():
-    pass
-
-def end_game():
-    pass
-
-
-def dispatch_move(move, board):
-    if move_legal(move, board):
-        return transition(move_board)
-    else:
-        return 'invalid'
-
+        if move_legal(move):
+            board = transition(move, board)
+            winner_ = winner(board)
+            if winner_:
+                game_over = True
 
