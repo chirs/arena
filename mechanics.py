@@ -33,6 +33,10 @@ def initialize():
 
 
 def moves(position, direction):
+    """
+    All potential non-capture moves (1 diagonal square away); no collision detection
+    """
+
     if position % 8 == 0:
         moves = [position + 9, position - 7]
     elif position % 8 == 7:
@@ -52,6 +56,10 @@ def moves(position, direction):
 
 
 def capture_moves(position, direction):
+    """
+    All potential capture moves (i.e. moves two diagonal squares away; no collision detection
+    """
+
     if position % 8 in (0,1):
         moves = [position + 18, position - 14]
     elif position % 8 in (6,7):
@@ -74,22 +82,19 @@ def valid_capture_moves(player, board, direction=None):
     """
     Capture moves that will actually result in a capture.
     """
-    
-    positions = [i for i, char in enumerate(board) if char == player]
-    opponent = get_opponent(player)
 
+    opponent = get_opponent(player)    
+    positions = [i for i, char in enumerate(board) if char == player]
 
     captures = []
     
     for position in positions:
         potential_captures = capture_moves(position, direction)
-        if position == 280:
-            import pdb; pdb.set_trace()
-
         for end_p in potential_captures:
             jumped_p = (position + end_p) / 2
             if board[end_p] == ' ' and board[jumped_p] == opponent:
-                captures.append(end_p)
+                t = (position, end_p)
+                captures.append(t)
             
     return captures
 
@@ -105,12 +110,20 @@ def move_legal(move, board):
     if end_cell != ' ':
         return False
 
-    if start_cell == 'r':
+    player = start_cell.lower()
+
+    if is_king(start_cell):
+        direction = None
+    elif start_cell == 'r':
         direction = 1
-    else:
-        direction = -1
+    elif start_cell == 'b':
+        direction = 1
+
 
     # Check for forced jumps.
+    valid_captures = valid_capture_moves(player, board, direction)
+    if valid_captures and move not in valid_captures:
+        return False
 
     if end_position in legal_moves(start_position, direction):
         return True
