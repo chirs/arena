@@ -1,4 +1,5 @@
 
+# Should be moved to surpervisor.py
 def draw_board(board):
     s = ''
     for i in range(0,64,8):
@@ -23,42 +24,45 @@ def men_moves(position, direction):
 
     if direction == 1:
         if position % 8 == 0:
-            return [position + 9]
+            moves = [position + 9]
         elif position % 8 == 7:
-            return [position + 7]
+            moves = [position + 7]
         else:
-            return [position + 7, position + 9]
+            moves = [position + 7, position + 9]
         
     elif direction == -1:
         if position % 8 == 0:
-            return [position - 7]
+            moves = [position - 7]
         elif position % 8 == 7:
-            return [position - 9]
+            moves = [position - 9]
         else:
-            return [position - 7, position - 9]
+            moves = [position - 7, position - 9]
+
+    return [e for e in moves if 0 <= e <= 63]
 
 def men_jump_moves(position, direction):
 
     if direction == 1:
         if position % 8 in (0, 1):
-            return [position + 18]
+            moves = [position + 18]
 
         elif position % 8 in (6, 7):
-            return [position + 14]
+            moves = [position + 14]
 
         else:
-          return [position + 14, position + 18]
+            moves = [position + 14, position + 18]
 
     elif direction == -1:
         if position % 8 in (0, 1):
-            return [position - 14]
+            moves = [position - 14]
 
         elif position % 8 in (6, 7):
-            return [position - 18]
+            moves =  [position - 18]
 
         else:
-          return [position - 14, position - 18]
+            moves = [position - 14, position - 18]
 
+    return [e for e in moves if 0 <= e <= 63]
 
 def king_moves(position):
     if position % 8 == 0:
@@ -88,6 +92,8 @@ def opponent(p):
         return 'r'
     else:
         raise
+
+def player_must_capture(player, board):
 
 def move_legal(move, board):
     start_position, end_position = move
