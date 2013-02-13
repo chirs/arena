@@ -202,8 +202,9 @@ def move_legal(move, board):
     # Check for forced jumps.
     valid_captures = valid_capture_moves(player, board, direction)
     if valid_captures:
-        return move in valid_captures
+        return tuple(move) in valid_captures
     else:
+
         return end_position in moves(start_position, direction)
 
 def transition(move, board):
