@@ -42,11 +42,10 @@ def play(sockets, game_class):
                 send_state(sockets[2], build_state(2, game.board, result))
                 return
 
-if __name__ == "__main__":
-    sockets = start(HOST, PORT)
-    try:
-        play(sockets, Checkers)
-    except:
-        pass
-    finally:
-        stop(sockets)
+
+def play_wrapper(game_class):
+    sockets = start(HOST, PORT)    
+    play(sockets, Checkers)
+    stop(sockets)
+
+
