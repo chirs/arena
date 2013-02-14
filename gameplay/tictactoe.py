@@ -4,6 +4,8 @@ from gameplay.game import Game
 
 class TicTacToe(Game):
 
+    #player_mapping = [(1, 'x'), (2, 'o')]
+
 
     def __init__(self, player, board=None):
         self.player = player
@@ -17,6 +19,10 @@ class TicTacToe(Game):
         
     def move_legal(self, move):
         return self.board[move] == ' '
+
+
+    def is_tie(self):
+        return ' ' not in self.board
     
     def winner(self):
         WINCOMBOS = [[0,1,2], [3,4,5], [6,7,8],
@@ -29,6 +35,18 @@ class TicTacToe(Game):
                 winner = s.pop()
                 return winner
         return None
+
+    def result(self):
+        if self.is_tie():
+            return -1
+        else:
+            w = self.winner()
+            if w is None:
+                return 0
+            else:
+                # return w
+                return 1
+
 
     def initialize(self):
         return ' ' * 9        
