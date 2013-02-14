@@ -207,10 +207,8 @@ def valid_capture_moves(player, board, direction=None):
     []
     """
 
-
-
     opponent = get_opponent(player)    
-    positions = [i for i, char in enumerate(board) if char == player]
+    positions = [i for i, char in enumerate(board) if char.lower() == player]
 
     captures = []
     
@@ -218,8 +216,6 @@ def valid_capture_moves(player, board, direction=None):
         potential_captures = capture_moves(position, direction)
         for end_p in potential_captures:
             jumped_p = int((position + end_p) / 2) # jumped_p should always be an integer
-            if type(jumped_p) != int:
-                import pdb; pdb.set_trace()
 
             if board[end_p] == ' ' and board[jumped_p].lower() == opponent:
                 t = (position, end_p)
@@ -258,11 +254,9 @@ def move_legal(move, board):
     if start_position < 0 or end_position < 0:
         return False
 
-    try:
-        start_cell = board[start_position]
-        end_cell = board[end_position]
-    except:
-        import pdb; pdb.set_trace()
+    start_cell = board[start_position]
+    end_cell = board[end_position]
+
 
     if start_cell == ' ':
         return False
@@ -275,6 +269,8 @@ def move_legal(move, board):
 
     # Check for forced jumps.
     valid_captures = valid_capture_moves(player, board, direction)
+    print(direction)
+    print(valid_captures)
     if valid_captures:
         return tuple(move) in valid_captures
     else:
