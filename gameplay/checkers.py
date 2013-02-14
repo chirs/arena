@@ -1,6 +1,87 @@
 
 
 
+
+def draw_board(board):
+    s = ''
+    for i in range(0,64,8):
+        s += board[i:i+8]
+        s += '\n'
+    print(s)
+
+
+def initialize():
+    """
+    Initial board state.
+
+    >>> initialize()[23]
+    'r'
+    >>> initialize()[28]
+    ' '
+    >>> initialize()[62]
+    'b'
+    """
+
+    rx = ' r r r rr r r r  r r r r'
+    bx = 'b b b b  b b b bb b b b '
+
+    return rx + ' ' * 16 + bx
+
+
+def transition(move, board):
+    """
+    >>> board = 'r' + 63 * ' '
+    >>> transition((0, 9), board)[0]
+    ' '
+    >>> transition((0, 9), board)[9]
+    'r'
+    """
+
+    start_p, end_p = move
+    distance = abs(start_p - end_p)
+
+    board_list = list(board)
+    board_list[start_p], board_list[end_p] = board[end_p], board[start_p]    
+
+
+    if distance > 9:
+        jumped_p = int((start_p + end_p) / 2)
+        board_list[jumped_p] = ' '
+
+    for position in range(0, 8):
+        if board_list[position] == 'b':
+            board_list[position] = 'B'
+
+
+    for position in range(56, 64):
+        if board_list[position] == 'r':
+            board_list[position] = 'R'
+
+    return ''.join(board_list)
+        
+
+
+def winner(board):
+    """
+    >>> winner(64 * 'b')
+    'b'
+    >>> winner('r' + 64 * ' ')
+    'r'
+    """
+
+    bl = board.lower()
+
+    if 'r' not in bl:
+        return 'b'
+    elif 'b' not in bl:
+        return 'r'
+    else:
+        return None
+
+
+
+
+
 def get_direction(player):
     """
     >>> get_direction('R')
@@ -48,23 +129,6 @@ def is_king(char):
     """
     return not char.islower()
 
-
-def initialize():
-    """
-    Initial board state.
-
-    >>> initialize()[23]
-    'r'
-    >>> initialize()[28]
-    ' '
-    >>> initialize()[62]
-    'b'
-    """
-
-    rx = ' r r r rr r r r  r r r r'
-    bx = 'b b b b  b b b bb b b b'
-
-    return rx + ' ' * 16 + bx
 
 
 def moves(position, direction):
@@ -157,7 +221,7 @@ def valid_capture_moves(player, board, direction=None):
             if type(jumped_p) != int:
                 import pdb; pdb.set_trace()
 
-            if board[end_p] == ' ' and board[jumped_p] == opponent:
+            if board[end_p] == ' ' and board[jumped_p].lower() == opponent:
                 t = (position, end_p)
                 captures.append(t)
 
@@ -187,8 +251,18 @@ def move_legal(move, board):
     """
 
     start_position, end_position = move
-    start_cell = board[start_position]
-    end_cell = board[end_position]
+
+    if start_position > 63 or end_position > 63:
+        return False
+
+    if start_position < 0 or end_position < 0:
+        return False
+
+    try:
+        start_cell = board[start_position]
+        end_cell = board[end_position]
+    except:
+        import pdb; pdb.set_trace()
 
     if start_cell == ' ':
         return False
@@ -206,47 +280,6 @@ def move_legal(move, board):
     else:
 
         return end_position in moves(start_position, direction)
-
-def transition(move, board):
-    """
-    >>> board = 'r' + 63 * ' '
-    >>> transition((0, 9), board)[0]
-    ' '
-    >>> transition((0, 9), board)[9]
-    'r'
-    """
-
-    start_p, end_p = move
-    distance = abs(start_p - end_p)
-
-    board_list = list(board)
-    board_list[start_p], board_list[end_p] = board[end_p], board[start_p]    
-
-
-    if distance > 9:
-        jumped_p = int((start_p + end_p) / 2)
-        board_list[jumped_p] = ' '
-
-    return ''.join(board_list)
-        
-    return board
-
-
-def winner(board):
-    """
-    >>> winner(64 * 'b')
-    'b'
-    >>> winner('r' + 64 * ' ')
-    'r'
-    """
-
-    if 'r' not in board:
-        return 'b'
-    elif 'b' not in board:
-        return 'r'
-    else:
-        return None
-
 
 if __name__ == "__main__":
     import doctest
