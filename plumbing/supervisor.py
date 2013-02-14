@@ -1,51 +1,52 @@
 
-from server import start, get_move, send_state
-from gameplay.checkers import move_legal, transition, initialize, winner, draw_board
+from server import start, stop, get_move, send_state
+#from gameplay.checkers import move_legal, transition, initialize, winner, draw_board
+from gameplay.tictactoe import TicTacToe
 
 HOST = '127.0.0.1'
 PORT = 1060
 
 
-def build_state(player, winner, board):
+def build_state(player, board, winner):
 
     return {
         'player': player,
+        'board': board,
         'winner': winner,
-        'board': board
         }
 
-def main():
-    player1, player2 = start(HOST, PORT)
-    board = initialize()
-    player1_turn = True
-    game_over = False
-    winner_ = None
+def play(sockets, game_class):
 
-    while not game_over:
+    player = 1
+    game = game_class()
 
-        if player1_turn:
-            p = player1
-            ps = 'b'
-        else:
-            p = player2
-            ps = 'r'
+    while True:
+        player_sock = sockets[player]
+        state = build_state(player, game.board, 0)
+        send_state(player_sock, state)
 
-        state = build_state(ps, winner_, board)
-        send_state(p, state)
-        move = get_move(p)
+        move = get_move(player_sock)
 
-        if move_legal(move, board):
-            draw_board(board)
-            player1_turn = not(player1_turn)
-            board = transition(move, board)
+        if game.move_legal(move):
 
-            winner_ = winner(board)
-            if winner_:
-                draw_board(board)
-                game_over = True
+            player = 3 - player # Toggle between 1 and 2...
+            game.draw_board()
+            #game = game.transition(move, player)
+            game.transition(move, player)
+
+            result = game.result()
+            if result:
+                game.draw_board()
                 print("Game over!")
-                send_state(player1, build_state('b', winner_, board))
-                send_state(player2, build_state('r', winner_, board))
+                send_state(sockets[1], build_state(1, result, game.board))
+                send_state(sockets[2], build_state(2, result, game.board))
+                return
 
 if __name__ == "__main__":
-    main()
+    sockets = start(HOST, PORT)
+    try:
+        play(sockets, TicTacToe)
+    except:
+        pass
+    finally:
+        stop(sockets)

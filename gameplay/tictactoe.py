@@ -4,18 +4,33 @@ from gameplay.game import Game
 
 class TicTacToe(Game):
 
-    #player_mapping = [(1, 'x'), (2, 'o')]
+    player_mapping = {
+        1: 'x',
+        2: 'o',
+        }
+
+    def __init__(self, board=None):
+        self.board = board or self.initial_board()
 
 
-    def __init__(self, player, board=None):
-        self.player = player
-        self.board = board or self.initialize()
+    @staticmethod
+    def initial_board():
+        return ' ' * 9  
 
-    
+
+    def draw_board(self):
+        print(self.board[:3])
+        print(self.board[3:6])
+        print(self.board[6:9])
+        print("===")
+
     def transition(self, move, player):
+        mark = self.player_mapping[player]
         l = list(self.board)
-        l[move] = player
-        return ''.join(l)
+        l[move] = mark
+        self.board = ''.join(l)
+        #new_state = TicTacToe(''.join(l))
+        #return new_game
         
     def move_legal(self, move):
         return self.board[move] == ' '
@@ -48,5 +63,3 @@ class TicTacToe(Game):
                 return 1
 
 
-    def initialize(self):
-        return ' ' * 9        

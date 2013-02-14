@@ -14,4 +14,4 @@ def get_move(state):
             return i
 
 if __name__ == "__main__":
-    play_checkers()
+    play_tictactoe()
