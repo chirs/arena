@@ -1,6 +1,5 @@
 
 from server import start, stop, get_move, send_state
-#from gameplay.checkers import move_legal, transition, initialize, winner, draw_board
 from gameplay.tictactoe import TicTacToe
 
 HOST = '127.0.0.1'
