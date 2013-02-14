@@ -5,9 +5,15 @@ from gameplay.game import Game
 
 class Checkers(Game):
 
+    player_mapping = {
+        1: 'b',
+        2: 'r',
+        }
+
     
-    def __init__(self, board=None):
+    def __init__(self, board=None, current_player=1):
         self.board = board or self.initial_board()
+        self.current_player = current_player
         self.moves_without_capture = 0
 
 
@@ -118,10 +124,7 @@ class Checkers(Game):
         'r'
         """
 
-        # Need to use player
-
         start_p, end_p = move
-
 
         distance = abs(start_p - end_p)
 
@@ -146,6 +149,7 @@ class Checkers(Game):
             if board_list[position] == 'r':
                 board_list[position] = 'R'
 
+        self.current_player = 3 - self.current_player # Toggle between 1 and 2.
         self.board = ''.join(board_list)
 
 
@@ -179,7 +183,10 @@ class Checkers(Game):
         start_cell = self.board[start_position]
         end_cell = self.board[end_position]
 
-        if start_cell == ' ' or end_cell != ' ':
+        if  start_cell.lower() != self.player_mapping[self.current_player]:
+            return False
+
+        if end_cell != ' ':
             return False
 
         player = start_cell.lower()

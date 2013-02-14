@@ -15,9 +15,10 @@ def get_move(state):
     board = state['board']
     while True:
         p1 = random.randint(0, 63)
-        p2 = p1 + random.randint(-19, 19)
+        p2 = p1 + random.choice([-18, -14, -9, -7, 7, 9, 14, 18])
         move = (p1, p2)
-        if Checkers(board).move_legal(move):
+        game = Checkers(board, state['player'])
+        if game.move_legal(move):
             return move
         
 
