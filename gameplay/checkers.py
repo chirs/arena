@@ -7,6 +7,9 @@ def draw_board(board):
     for i in range(0,64,8):
         s += board[i:i+8]
         s += '\n'
+
+    s += '=' * 8
+
     print(s)
 
 
@@ -269,8 +272,6 @@ def move_legal(move, board):
 
     # Check for forced jumps.
     valid_captures = valid_capture_moves(player, board, direction)
-    print(direction)
-    print(valid_captures)
     if valid_captures:
         return tuple(move) in valid_captures
     else:

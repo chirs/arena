@@ -16,16 +16,20 @@ def connect():
 
 def play(sock):
     #s.sendall("Hello")
-    game_over = False
 
-    while not game_over:
+    while True:
         msg = sock.recv(1028).decode()
         state = json.loads(msg)
-        move = get_move(state)
-        move_json = json.dumps(move)
-        sock.sendall(move_json.encode())
-        #print(msg)
+        
+        if state['winner']:
+            print("%s wins" % state['winner'])
+            sock.close()
+            return
 
+        else:
+            move = get_move(state)
+            move_json = json.dumps(move)
+            sock.sendall(move_json.encode())
 
 
 def get_move(state):

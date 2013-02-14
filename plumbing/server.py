@@ -18,5 +18,6 @@ def get_move(player):
 
 def send_state(player, state):
     s = json.dumps(state)
+    print(s)
     player.sendall(s.encode())
 
