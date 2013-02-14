@@ -1,5 +1,5 @@
 
-from client import play, connect
+from arena.client.client import play, connect
 
 
 def play_tictactoe():

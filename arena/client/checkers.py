@@ -1,9 +1,9 @@
 
 import random
 
-from gameplay.checkers import Checkers
+from arena.gameplay.checkers import Checkers
 
-from client import play, connect
+from arena.client.client import play, connect
 
 
 def play_checkers():
