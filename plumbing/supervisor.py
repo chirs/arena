@@ -1,6 +1,7 @@
 
 from server import start, stop, get_move, send_state
 from gameplay.tictactoe import TicTacToe
+from gameplay.checkers import Checkers
 
 HOST = '127.0.0.1'
 PORT = 1060
@@ -37,14 +38,14 @@ def play(sockets, game_class):
             if result:
                 game.draw_board()
                 print("Game over!")
-                send_state(sockets[1], build_state(1, result, game.board))
-                send_state(sockets[2], build_state(2, result, game.board))
+                send_state(sockets[1], build_state(1, game.board, result))
+                send_state(sockets[2], build_state(2, game.board, result))
                 return
 
 if __name__ == "__main__":
     sockets = start(HOST, PORT)
     try:
-        play(sockets, TicTacToe)
+        play(sockets, Checkers)
     except:
         pass
     finally:

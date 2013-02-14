@@ -1,7 +1,7 @@
 
 import random
 
-from gameplay.checkers import move_legal
+from gameplay.checkers import Checkers
 
 from client import play, connect
 
@@ -17,7 +17,7 @@ def get_move(state):
         p1 = random.randint(0, 63)
         p2 = p1 + random.randint(-19, 19)
         move = (p1, p2)
-        if move_legal(move, board):
+        if Checkers(board).move_legal(move):
             return move
         
 
