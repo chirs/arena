@@ -45,7 +45,7 @@ def play(sockets, game_class):
 
 def play_wrapper(game_class):
     sockets = start(HOST, PORT)    
-    play(sockets, Checkers)
+    play(sockets, game_class)
     stop(sockets)
 
 
