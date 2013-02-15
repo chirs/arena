@@ -9,14 +9,19 @@ class Game(object):
     def __init__(self):
         pass
 
-    def move_legal(self):
+    @staticmethod
+    def initial_board():
         raise NotImplementedError
 
-    def transition(self):
+    def draw_board(self):
         raise NotImplementedError
 
-    def initialize(self):
+
+    def move_legal(self, move):
+        raise NotImplementedError
+
+    def transition(self, move, player):
         raise NotImplementedError
     
-    def winner(self):
+    def result(self):
         raise NotImplementedError
