@@ -1,11 +1,12 @@
+#!/usr/bin/python3
 
-from arena.client.client import play, connect
+import sys
 
+from client import play, connect
 
-def play_tictactoe():
-    sock = connect()
+def play_tictactoe(host, port):
+    sock = connect(host, port)
     return play(sock, get_move)
-
 
 def get_move(state):
     board = state['board']
@@ -14,4 +15,6 @@ def get_move(state):
             return i
 
 if __name__ == "__main__":
-    play_tictactoe()
+    [_, host, port] = sys.argv
+    play_tictactoe(host, int(port))
+

@@ -22,6 +22,5 @@ def get_move(state):
 
 if __name__ == "__main__":
     [_, host, port] = sys.argv
-    port = int(port)
-    play_checkers(host, port)
+    play_checkers(host, int(port))
 

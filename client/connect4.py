@@ -1,13 +1,12 @@
 
-
+import sys
 import random
 
-from client.client import play, connect
+from client import play, connect
 
-def play_connect_four():
-    sock = connect()
+def play_connect_four(host, port):
+    sock = connect(host, port)
     return play(sock, get_move)
-
 
 def get_move(state):
     board = state['board']
@@ -20,5 +19,6 @@ def get_move(state):
     5
 
 if __name__ == "__main__":
-    play_connect_four()
+    [_, host, port] = sys.argv
+    play_connect_four(host, int(port))
 
