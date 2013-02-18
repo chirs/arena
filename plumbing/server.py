@@ -16,13 +16,13 @@ def start(host, port):
 def stop(socket_list):
     for sock in socket_list:
         sock.close()
-    
-def get_move(player):
-    msg = player.recv(1028).decode()
-    move = json.loads(msg)
-    return move
 
-def send_state(player, state):
-    s = json.dumps(state)
-    player.sendall(s.encode())
+def get_json(player_socket):
+    msg = player_socket.recv(1028).decode()
+    json_ = json.loads(msg)
+    return json_
+
+def send_json(player_socket, json_):
+    s = json.dumps(json_)
+    player_socket.sendall(s.encode())
 

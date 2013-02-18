@@ -7,7 +7,7 @@ from gameplay.checkers import Checkers
 from client import play, connect
 
 def play_checkers(host, port):
-    sock = connect(host, port)
+    sock = connect(host, port, 'checkers')['socket']
     return play(sock, get_move)
 
 def get_move(state):

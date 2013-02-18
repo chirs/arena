@@ -2,13 +2,14 @@
 import json
 import socket
 
-HOST = 'alexandre-1225B'
-PORT = 1060
-
-def connect(host, port):
+def connect(host, port, game):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((HOST, PORT))
-    return sock
+    sock.connect((host, port))
+    params = {'game':game}
+    sock.sendall(json.dumps(params).encode())
+    acknowledgment = json.loads(sock.recv(1028).decode())
+    acknowledgment.update({'socket':sock})
+    return acknowledgment
 
 def play(sock, move_function):
 

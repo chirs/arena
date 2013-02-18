@@ -5,7 +5,7 @@ import random
 from client import play, connect
 
 def play_connect_four(host, port):
-    sock = connect(host, port)
+    sock = connect(host, port)['socket']
     return play(sock, get_move)
 
 def get_move(state):

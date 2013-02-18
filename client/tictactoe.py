@@ -5,7 +5,7 @@ import sys
 from client import play, connect
 
 def play_tictactoe(host, port):
-    sock = connect(host, port)
+    sock = connect(host, port)['socket']
     return play(sock, get_move)
 
 def get_move(state):
