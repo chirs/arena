@@ -1,11 +1,13 @@
+#!/usr/bin/python3
 
+import sys
 import random
 
 from gameplay.checkers import Checkers
 from client import play, connect
 
-def play_checkers():
-    sock = connect()
+def play_checkers(host, port):
+    sock = connect(host, port)
     return play(sock, get_move)
 
 def get_move(state):
@@ -19,4 +21,7 @@ def get_move(state):
             return move
 
 if __name__ == "__main__":
-    play_checkers()
+    [_, host, port] = sys.argv
+    port = int(port)
+    play_checkers(host, port)
+

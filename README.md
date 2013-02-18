@@ -4,22 +4,21 @@ A network framework for staging turn-based, 1-vs-1 games against human or AI pla
 
 ### Getting started
 
-In one terminal, launch the server:
+In one terminal, launch the server with host '' and port:
 
-`$ python3 plumbing/supervisor.py`
+`$ plumbing/supervisor.py '' 1060`
 
-In another terminal, connect player I:
+In another terminal, connect player 1:
 
-`$ python3 client/checkers.py`
+`$ client/checkers.py alexandre-1225B 1060`
 
-In another terminal, connect player II:
+In another terminal, connect player 2:
 
-`$ python3 client/checkers.py`
+`$ client/checkers.py alexandre-1225B 1060`
 
 ### Wish List
 * Add history and logs to state so that clients can do postmortem of games
 * Fix doctests in checkers.py
-* Figure out how to run clients on different machines
 * Add time periods players have to submit their move within
 * Write clients in different languages
 * Documentation

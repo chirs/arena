@@ -2,11 +2,10 @@
 import json
 import socket
 
-HOST = '127.0.0.1'
+HOST = 'alexandre-1225B'
 PORT = 1060
 
-
-def connect():
+def connect(host, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((HOST, PORT))
     return sock
