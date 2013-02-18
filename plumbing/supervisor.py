@@ -3,7 +3,7 @@ from server import start, stop, get_move, send_state
 from gameplay.tictactoe import TicTacToe
 from gameplay.checkers import Checkers
 
-HOST = '127.0.0.1'
+HOST = ''
 PORT = 1060
 
 
