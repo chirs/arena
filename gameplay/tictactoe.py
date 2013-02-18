@@ -1,5 +1,5 @@
 
-from arena.gameplay.game import Game
+from gameplay.game import Game
 
 
 class TicTacToe(Game):
