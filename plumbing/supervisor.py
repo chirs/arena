@@ -48,7 +48,6 @@ def play_wrapper(host, port, game_class):
     stop(sockets)
 
 if __name__ == "__main__":
-    [_, host, port] = sys.argv
-    port = int(port)
-    play_wrapper(host, port, Checkers)
+    [_, game, host, port] = sys.argv
+    play_wrapper(host, int(port), eval(game))
 

@@ -4,9 +4,9 @@ A network framework for staging turn-based, 1-vs-1 games against human or AI pla
 
 ### Getting started
 
-In one terminal, launch the server with host '' and port:
+In one terminal, launch the server with game (Checkers, TicTacToe or ConnectFour case-sensitive), host '' and port:
 
-`$ plumbing/supervisor.py '' 1060`
+`$ plumbing/supervisor.py Checkers '' 1060`
 
 In another terminal, connect player 1:
 
