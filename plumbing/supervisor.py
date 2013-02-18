@@ -1,7 +1,7 @@
 
-from arena.plumbing.server import start, stop, get_move, send_state
-from arena.gameplay.tictactoe import TicTacToe
-from arena.gameplay.checkers import Checkers
+from server import start, stop, get_move, send_state
+from gameplay.tictactoe import TicTacToe
+from gameplay.checkers import Checkers
 
 HOST = '127.0.0.1'
 PORT = 1060
