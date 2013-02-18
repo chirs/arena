@@ -1,4 +1,8 @@
 
+from gameplay.tictactoe import TicTacToe
+from gameplay.checkers import Checkers
+from gameplay.connect4 import ConnectFour
+
 import json
 import socket
 

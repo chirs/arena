@@ -27,10 +27,3 @@ def play(sock, move_function):
             move_json = json.dumps(move)
             sock.sendall(move_json.encode())
 
-    
-    
-#if __name__ == "__main__":
-#    sock = connect()
-#    play(sock)
-    
-

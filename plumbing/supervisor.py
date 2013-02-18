@@ -48,4 +48,7 @@ def play_wrapper(game_class):
     play(sockets, game_class)
     stop(sockets)
 
+if __name__ == "__main__":
+    play_wrapper(Checkers)
+    #play_wrapper(ConnectFour)
 

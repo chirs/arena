@@ -1,15 +1,12 @@
 
 import random
 
-from arena.gameplay.checkers import Checkers
-
-from arena.client.client import play, connect
-
+from gameplay.checkers import Checkers
+from client import play, connect
 
 def play_checkers():
     sock = connect()
     return play(sock, get_move)
-
 
 def get_move(state):
     board = state['board']
@@ -20,8 +17,6 @@ def get_move(state):
         game = Checkers(board, state['player'])
         if game.move_legal(move):
             return move
-        
-
 
 if __name__ == "__main__":
     play_checkers()

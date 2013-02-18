@@ -2,8 +2,7 @@
 
 import random
 
-from arena.client.client import play, connect
-
+from client.client import play, connect
 
 def play_connect_four():
     sock = connect()
@@ -20,7 +19,6 @@ def get_move(state):
         import pdb; pdb.set_trace()
     5
 
-
-
 if __name__ == "__main__":
     play_connect_four()
+
