@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import json
-import datetime
 import select
 import sys
 
