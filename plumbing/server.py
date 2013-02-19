@@ -2,6 +2,7 @@
 import json
 import socket
 
+"""
 def start(host, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind((host, port))
@@ -16,11 +17,17 @@ def start(host, port):
 def stop(socket_list):
     for sock in socket_list:
         sock.close()
+"""
 
 def get_json(player_socket):
     msg = player_socket.recv(1028).decode()
-    json_ = json.loads(msg)
-    return json_
+    
+    if msg:
+        return json.loads(msg)
+    else:
+        return None
+
+
 
 def send_json(player_socket, json_):
     s = json.dumps(json_)

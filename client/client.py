@@ -7,13 +7,15 @@ def connect(host, port, game):
     sock.connect((host, port))
     params = {'game':game}
     sock.sendall(json.dumps(params).encode())
-    acknowledgment = json.loads(sock.recv(1028).decode())
-    acknowledgment.update({'socket':sock})
-    return acknowledgment
+    return sock
+
 
 def play(sock, move_function):
 
+    print("playing")
+
     while True:
+        
         msg = sock.recv(1028).decode()
         state = json.loads(msg)
         
