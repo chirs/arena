@@ -6,76 +6,8 @@ import select
 import socket
 import sys
 
+from match import Match
 from server import get_json, send_json
-
-from gameplay.tictactoe import TicTacToe
-from gameplay.checkers import Checkers
-from gameplay.connect4 import ConnectFour
-
-
-class Match(object):
-    # Represents a game currently being played between two networked players.
-
-    GAMES = {
-        'tictactoe': TicTacToe, 
-        'checkers': Checkers, 
-        'connectfour':ConnectFour,
-        }
-
-
-
-
-    def __init__(self, gname):
-        self.gname = gname
-        self.game = self.GAMES[gname]()
-        self.players = []
-        self.history = []
-        self.last_move = None
-
-    def add_player(self, socket):
-        self.players.append(socket)
-
-    def is_waiting(self):
-        return len(self.players) < 2
-
-    def is_ready(self):
-        return not self.is_waiting()
-
-
-    def get_current_socket(self):
-        current_player = self.game.current_player
-        return self.players[current_player-1]
-
-
-    def make_move(self, move):
-        self.game.transition(move, self.game.current_player)
-        self.history.append(move)
-        self.last_move = datetime.datetime.now()
-
-
-    def time_expired(self):
-        seconds = (datetime.datetime.now() - self.last_move).seconds
-        return seconds > 5
-
-
-    def build_state(self, player=None, result=None):
-
-        if player is None:
-            player = self.game.current_player
-
-        if result is None:
-            result = self.game.result()
-
-
-        return {
-            'player': player,
-            'board': self.game.board,
-            'winner': result,
-            'history': self.history
-            }
-        
-
-
 
 def make_listen_sock(host, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -84,16 +16,13 @@ def make_listen_sock(host, port):
     sock.listen(100) 
     return sock
 
-
 def pending_connection(listen_sock):
     pending_connection, _, _ = select.select([listen_sock], '', '', 0)
     return pending_connection
 
-
 def get_new_connection(listen_sock):
     game_sock, address = listen_sock.accept()
     return game_sock
-
 
 def supervise(host, port):
 
@@ -101,7 +30,6 @@ def supervise(host, port):
 
     active_matches = []
     complete_matches = []
-
     
     while True:
 
@@ -156,7 +84,6 @@ def supervise(host, port):
         complete_matches = []
 
                 
-
 if __name__ == "__main__":
     [_, host, port] = sys.argv
     supervise(host, int(port))
