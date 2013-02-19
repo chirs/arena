@@ -9,10 +9,9 @@ def connect(host, port, game):
     sock.sendall(json.dumps(params).encode())
     return sock
 
-
 def play(sock, move_function):
 
-    print("playing")
+    print("Game started!")
 
     while True:
         
