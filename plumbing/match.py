@@ -19,7 +19,7 @@ class Match(object):
         self.game = self.GAMES[gname]()
         self.players = []
         self.history = []
-        self.last_move = None
+        self.last_move_time = None
 
     def add_player(self, socket):
         self.players.append(socket)
@@ -37,10 +37,16 @@ class Match(object):
     def make_move(self, move):
         self.game.transition(move, self.game.current_player)
         self.history.append(move)
-        self.last_move = datetime.datetime.now()
+
+
+
+    def set_last_move_time(self, t=None):
+        if t is None:
+            t = datetime.datetime.now()
+        self.last_move_time = datetime.datetime.now()
 
     def time_expired(self):
-        seconds = (datetime.datetime.now() - self.last_move).seconds
+        seconds = (datetime.datetime.now() - self.last_move_time).seconds
         return seconds > 5
 
     def build_state(self, player=None, result=None):
