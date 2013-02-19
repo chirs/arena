@@ -95,8 +95,7 @@ connectfour and chess are in the pipeline, let us know if you would like to see 
 
 ## Wish List
 * Improve initial "handshake" with client, specifying the game played, player number, time limit for move, etc...
-* Fix doctests in checkers.py
 * Add time periods players have to submit their move within
 * Write clients in different languages
-* Get a test script together
+* Build some kind of test suite
 * Documentation
