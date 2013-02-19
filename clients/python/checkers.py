@@ -10,7 +10,6 @@ def play_checkers(host, port):
     sock = connect(host, port, 'checkers')
     return play(sock, get_move)
 
-
 def get_move(state):
     board = state['board']
     while True:
