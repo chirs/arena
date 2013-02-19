@@ -86,8 +86,6 @@ class Chess(Game):
         board = set_position(self.board, start_p, '  ')
         board = set_position(board, end_p, start_chars)
 
-        import pdb; pdb.set_trace()
-        
         return Chess(board, self.opponent(), moves_without_capture)
 
 
