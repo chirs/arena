@@ -35,8 +35,10 @@ class Match(object):
         return self.players[current_player-1]
 
     def make_move(self, move):
+        print("Moving")
         self.game.transition(move, self.game.current_player)
         self.history.append(move)
+        self.set_last_move_time()
 
 
 
@@ -46,6 +48,9 @@ class Match(object):
         self.last_move_time = datetime.datetime.now()
 
     def time_expired(self):
+        if self.last_move_time is None:
+            return False
+
         seconds = (datetime.datetime.now() - self.last_move_time).seconds
         return seconds > 5
 

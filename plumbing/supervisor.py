@@ -51,37 +51,41 @@ def supervise(host, port):
 
         for match in active_matches:
             sock = match.get_current_socket()
+            result = None
+            moved = False
+
+            # A move has been made.
             if sock in readable_sockets:
                 move = get_json(sock)
 
-                result = None
-
-                if move:
-                    if match.game.move_legal(move):
-                        match.make_move(move)
-                    else:
-                        print("Game over. Player %s forfeits because of illegal move." % match.game.current_player)
-                        result = 3 - match.game.current_player
+                if match.game.move_legal(move):
+                    match.make_move(move)
+                    moved = True
 
                 else:
-                    if match.time_expired():
-                        print("Game over. Player %s forfeits because of time." % match.game.current_player)
-                        result = 3 - match.game.current_player
-                        
+                    print("Game over. Player %s forfeits because of illegal move." % match.game.current_player)
+                    result = 3 - match.game.current_player
+
+            # No move has been made.
+            else:
+                if match.time_expired():
+                    print("Game over. Player %s forfeits because of time." % match.game.current_player)
+                    result = 3 - match.game.current_player
+
+            if result is None:
+                result = match.game.result()
 
 
 
-                if result is None:
-                    result = match.game.result()
-
+            if result != 0:
                 match.game.draw_board()
+                complete_matches.append(match)
+                for i, player in enumerate(match.players, start=1):
+                    send_json(player, match.build_state(player=i, result=result))
 
-                if result != 0:
-                    complete_matches.append(match)
-                    for i, player in enumerate(match.players, start=1):
-                        send_json(player, match.build_state(player=i, result=result))
-                else:
-                    send_json(match.get_current_socket(), match.build_state())
+            elif moved is True:
+                match.game.draw_board()
+                send_json(match.get_current_socket(), match.build_state())
                         
 
         # Clean up.
