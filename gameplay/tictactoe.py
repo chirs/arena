@@ -9,8 +9,9 @@ class TicTacToe(Game):
         2: 'o',
         }
 
-    def __init__(self, board=None):
+    def __init__(self, board=None, current_player=1):
         self.board = board or self.initial_board()
+        self.current_player = current_player
 
 
     @staticmethod
@@ -29,6 +30,7 @@ class TicTacToe(Game):
         l = list(self.board)
         l[move] = mark
         self.board = ''.join(l)
+        self.current_player = 3 - self.current_player
         #new_state = TicTacToe(''.join(l))
         #return new_game
         

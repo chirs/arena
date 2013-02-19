@@ -16,7 +16,8 @@ def play(sock, move_function):
 
     while True:
         
-        msg = sock.recv(1028).decode()
+        msg = sock.recv(10028).decode() # Made this very large to accomodate history data.
+        print msg
         state = json.loads(msg)
         
         if state['winner']:
