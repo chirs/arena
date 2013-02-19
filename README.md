@@ -23,9 +23,55 @@ In another terminal, connect player 2:
 This section covers the API calls a client needs to handle. A game basically consist of three steps:
 
 1. The AI client connects to the game server (host ??? and port ???)
-2. The AI client sends a string encapsulating a JSON object (a.k.a. the "handshake"). This handshake must have the field "game" (see section Supported Games section). E.g.: "{game:checkers}" 
+2. The AI client sends a string encapsulating a JSON object (henceforth the "request"). This request must have the field "game" (see [Supported Games section](#games)). E.g.: "{game:checkers}" 
+3. The server sends a string encapsulating a JSON object (henceforth the "acknowledgment"). This acknowledgment has the following fields:
 
-## Supported Games
+<table>
+  <tr>
+    <th>Field name</th><th>Details</th>
+  </tr>
+  <tr>
+    <td>name</td><td>checkers or tictactoe or etc</td>
+  </tr>
+  <tr>
+    <td>player</td><td>1 or 2</td>
+  </tr>
+  <tr>
+    <td>timelimit</td><td>5 seconds</td>
+  </tr>
+</table>
+
+An example acknowledgement would be "{name:tictactoe, player:2, timelimit:5}".
+
+4. The server sends a string encapsulating a JSON object (henceforth the "game state"). This game state has the following fields:
+<table>
+  <tr>
+    <th>Field name</th><th>Details</th>
+  </tr>
+  <tr>
+    <td>player</td><td>1 or 2</td>
+  </tr>
+  <tr>
+    <td>board</td><td>board representation (see [supported games section](#games)</td>
+  </tr>
+  <tr>
+    <td>winner</td><td>-1 is tie, 0 is game ongoing, 1 is player 1 wins, 2 is player 2 wins</td>
+  </tr>
+  <tr>
+    <td>history</td><td>A list holding the sequence of moves done in the game</td>
+  </tr>
+  <tr>
+    <td>log</td><td>A log of miscellaneous relevant info about the game</td>
+  </tr>
+</table>
+
+An example of game state would be "{player:2, board:"xoxoxo   ", winner:0, history:[0,1,2,3,4,5], log:""}.
+
+5. The AI player sends the server a move (see [supported games section](#games) for the representation of moves for the different games)
+
+Steps 4 and 5 are repeated until the game is over.
+
+## Supported Games <a id=games></a>
 
 <table>
   <tr>
