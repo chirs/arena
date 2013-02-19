@@ -36,6 +36,7 @@ class Match(object):
 
     def make_move(self, move):
         print("Moving")
+        print("CP: %s" % self.game.current_player)
         self.game.transition(move, self.game.current_player)
         self.history.append(move)
         self.set_last_move_time()
