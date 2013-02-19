@@ -22,9 +22,11 @@ In another terminal, connect player 2:
 
 This section covers the API calls a client needs to handle. A game basically consist of three steps:
 
-1. The AI client connects to the game server (host ??? and port ???)
-2. The AI client sends a string encapsulating a JSON object (henceforth the "request"). This request must have the field "game" (see [Supported Games section](#games)). E.g.: "{game:checkers}" 
-3. The server sends a string encapsulating a JSON object (henceforth the "acknowledgment"). This acknowledgment has the following fields:
+(i) The AI client connects to the game server (host ??? and port ???)
+
+(ii) The AI client sends a string encapsulating a JSON object (henceforth the "request"). This request must have the field "game" (see [Supported Games section](#games)). E.g.: "{game:checkers}" 
+
+(iii) The server sends a string encapsulating a JSON object (henceforth the "acknowledgment"). This acknowledgment has the following fields:
 
 <table>
   <tr>
@@ -43,7 +45,7 @@ This section covers the API calls a client needs to handle. A game basically con
 
 An example acknowledgement would be "{name:tictactoe, player:2, timelimit:5}".
 
-4. The server sends a string encapsulating a JSON object (henceforth the "game state"). This game state has the following fields:
+(iv) The server sends a string encapsulating a JSON object (henceforth the "game state"). This game state has the following fields:
 <table>
   <tr>
     <th>Field name</th><th>Details</th>
@@ -67,9 +69,9 @@ An example acknowledgement would be "{name:tictactoe, player:2, timelimit:5}".
 
 An example of game state would be "{player:2, board:"xoxoxo   ", winner:0, history:[0,1,2,3,4,5], log:""}.
 
-5. The AI player sends the server a move (see [supported games section](#games) for the representation of moves for the different games)
+(v) The AI player sends the server a move (see [supported games section](#games) for the representation of moves for the different games)
 
-Steps 4 and 5 are repeated until the game is over.
+Steps (iv) and (v) are repeated until the game is over.
 
 ## Supported Games <a id=games></a>
 
