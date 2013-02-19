@@ -1,22 +1,24 @@
 # Arena
 
-A network framework for staging turn-based, 1-vs-1 games against human or AI players.
+A game server for staging turn-based, 1-vs-1 match between AI players.
 
-### Getting started
+Uses a server/client framework using TCP sockets so players can be written in your language of choice.
 
-In one terminal, launch the server with game (Checkers, TicTacToe or ConnectFour case-sensitive), host '' and port:
+## Quick example
 
-`$ plumbing/supervisor.py Checkers '' 1060`
+In one terminal, launch the server, host and port:
+
+`$ plumbing/supervisor.py some.host.here 12345`
 
 In another terminal, connect player 1:
 
-`$ client/checkers.py alexandre-1225B 1060`
+`$ client/python/checkers.py some.host.here 12345`
 
 In another terminal, connect player 2:
 
-`$ client/checkers.py alexandre-1225B 1060`
+`$ client/python/checkers.py some.host.here 12345`
 
-### Wish List
+## Wish List
 * Improve initial "handshake" with client, specifying the game played, player number, time limit for move, etc...
 * Fix doctests in checkers.py
 * Add time periods players have to submit their move within
