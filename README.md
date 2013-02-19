@@ -12,15 +12,16 @@ In one terminal, launch the server, host and port:
 
 In another terminal, connect player 1:
 
-`$ client/python/checkers.py some.host.here 12345`
+`$ clients/python/checkers.py some.host.here 12345`
 
 In another terminal, connect player 2:
 
-`$ client/python/checkers.py some.host.here 12345`
+`$ clients/python/checkers.py some.host.here 12345`
 
 ## Wish List
 * Improve initial "handshake" with client, specifying the game played, player number, time limit for move, etc...
 * Fix doctests in checkers.py
 * Add time periods players have to submit their move within
 * Write clients in different languages
+* Get a test script together
 * Documentation
