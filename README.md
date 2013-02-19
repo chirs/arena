@@ -23,7 +23,9 @@ In another terminal, connect player 2:
 This section covers the API calls a client needs to handle. A game basically consist of three steps:
 
 (i) The AI client connects to the game server (host ??? and port ???)
+
 (ii) The AI client sends a string encapsulating a JSON object (henceforth the "request"). This request must have the field "game" (see [Supported Games section](#games)). E.g.: "{game:checkers}" 
+
 (iii) The server sends a string encapsulating a JSON object (henceforth the "acknowledgment"). This acknowledgment has the following fields:
 
 <table>
