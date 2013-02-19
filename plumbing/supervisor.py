@@ -3,18 +3,10 @@
 import json
 import datetime
 import select
-import socket
 import sys
 
 from match import Match
-from server import get_json, send_json
-
-def make_listen_sock(host, port):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind((host, port))
-    sock.listen(100) 
-    return sock
+from server import make_listen_sock, get_json, send_json
 
 def pending_connection(listen_sock):
     pending_connection, _, _ = select.select([listen_sock], '', '', 0)
@@ -53,7 +45,6 @@ def supervise(host, port):
                 send_json(match.players[0], match.build_state())
                 match.last_move = datetime.datetime.now()
 
-
         # Handle current games.
 
         current_sockets = [e.get_current_socket() for e in active_matches]
@@ -78,11 +69,9 @@ def supervise(host, port):
                         for i, player in enumerate(match.players, start=1):
                             send_json(player, match.build_state(player=i, result=winner))
 
-
         # Clean up.
         active_matches = [e for e in active_matches if e not in complete_matches]
         complete_matches = []
-
                 
 if __name__ == "__main__":
     [_, host, port] = sys.argv
