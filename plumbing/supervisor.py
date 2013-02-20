@@ -6,7 +6,7 @@ import sys
 from .match import Match
 from .server import make_listen_sock, get_json, send_json
 
-def supervise(host, port):
+def supervise(host, port, known_games):
 
     def handle_new_connection(listen_sock, match_list):
         # Side effects!
@@ -27,7 +27,7 @@ def supervise(host, port):
                 match = eligible_matches[0]
                 acknowledgment['player'] = 2
             else:
-                match = Match(game_string)
+                match = Match(game_string, known_games[game_string]())
                 match_list.append(match)
                 acknowledgment['player'] = 1
 
