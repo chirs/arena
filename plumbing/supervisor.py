@@ -65,8 +65,7 @@ def supervise(host, port):
                 print("Game over. Player %s forfeits because of time." % match.game.current_player)
                 result = 3 - match.game.current_player
 
-        if result is None:
-            result = match.game.result()
+        result = result or match.game.result()
 
         if result != 0:
             match.game.draw_board()
@@ -98,3 +97,4 @@ def supervise(host, port):
         # Clean up.
         active_matches = [e for e in active_matches if e not in complete_matches]
         complete_matches = []
+

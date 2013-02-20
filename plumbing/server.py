@@ -4,7 +4,6 @@ import socket
 
 def make_listen_sock(host, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind((host, port))
     sock.listen(100) 
     return sock
