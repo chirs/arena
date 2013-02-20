@@ -3,6 +3,8 @@ import json
 import socket
 import pickle
 
+from gencases import cases
+
 def test_case(host, port, case):
 
     # Connect player 1
@@ -19,7 +21,7 @@ def test_case(host, port, case):
     params = {'game':case['name']}
     for i, socket_ in enumerate(sockets):
         socket_.sendall(json.dumps(params).encode())
-        msg = socket_.recv(1000).decode()
+        msg = socket_.recv(10000).decode()
         ack = json.loads(msg)
 
         # Check acknowledgment is correct
@@ -74,7 +76,7 @@ if __name__ == "__main__":
     HOST = ''
     PORT = 12345
 
-    cases = pickle.load(open("test_cases.p", "rb"))
+    #cases = pickle.load(open("test_cases.p", "rb"))
 
     results = [test_case(HOST, PORT, case) for case in cases]
 
