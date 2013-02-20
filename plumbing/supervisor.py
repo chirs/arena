@@ -6,7 +6,7 @@ import sys
 from .match import Match
 from .server import make_listen_sock, get_json, send_json
 
-def supervise(host, port):
+def supervise(host, port, known_games):
 
     def handle_new_connection(listen_sock, match_list):
         # Side effects!
@@ -27,7 +27,7 @@ def supervise(host, port):
                 match = eligible_matches[0]
                 acknowledgment['player'] = 2
             else:
-                match = Match(game_string)
+                match = Match(game_string, known_games[game_string]())
                 match_list.append(match)
                 acknowledgment['player'] = 1
 
@@ -70,20 +70,20 @@ def supervise(host, port):
 
         if result != 0:
             match.game.draw_board()
-            complete_matches.append(match)
+            complete_matches.add(match)
             for i, player in enumerate(match.players, start=1):
                 send_json(player, match.build_state(player=i, result=result))
 
         elif moved is True:
             match.game.draw_board()
             send_json(match.get_current_socket(), match.build_state())
-                        
+
 
     active_matches = []
-    complete_matches = []
+    complete_matches = set()
 
     listen_sock = make_listen_sock(host, port)
-    
+
     while True:
         # Check for new connection.
         handle_new_connection(listen_sock, active_matches)
@@ -97,4 +97,4 @@ def supervise(host, port):
 
         # Clean up.
         active_matches = [e for e in active_matches if e not in complete_matches]
-        complete_matches = []
+        complete_matches = set()
