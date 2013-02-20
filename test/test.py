@@ -1,9 +1,7 @@
 
+import sys
 import json
 import socket
-import pickle
-
-from gencases import cases
 
 def test_case(host, port, case):
 
@@ -30,9 +28,12 @@ def test_case(host, port, case):
             assert(ack == expected)
         except AssertionError:
             print("Incorrect acknowledgment:", ack, "!=", expected, "!!!")
+            
+            [s.close() for s in sockets] # Close sockets
             return False
 
     # Play game
+    outcome = 0
     for i, move in enumerate(case['history']):
 
         player = i%2+1 # toggle between 1 and 2
@@ -49,36 +50,40 @@ def test_case(host, port, case):
             assert(state['history'] == case['history'][:i])
         except AssertionError:
             print("Game server returned incorrect player or history")
+            # Close sockets
+            [s.close() for s in sockets] # Close sockets
             return False
 
-    # Receive game result
-    outcome = 0
-    for socket_ in sockets:
-        msg = socket_.recv(10000).decode() # Made this very large to accomodate history data.
-        state = json.loads(msg)
         outcome = state['winner']
+
+    # Receive game result
+    if case['result']:
+        for socket_ in sockets:
+            msg = socket_.recv(10000).decode() # Made this very large to accomodate history data.
+            state = json.loads(msg)
+            outcome = state['winner']
 
     # Check correct game outcome
     try:
         assert(outcome==case['result'])
     except AssertionError:
         print("Incorrect game outcome; expected", case['result'], ", got",outcome)
+        # Close sockets
+        [s.close() for s in sockets] # Close sockets
         return False
 
     # Close sockets
-    for socket_ in sockets:
-        socket_.close()
+    [s.close() for s in sockets]
 
     return True
 
 if __name__ == "__main__":
 
-    HOST = ''
-    PORT = 12345
+    _, host, port = sys.argv
 
-    #cases = pickle.load(open("test_cases.p", "rb"))
+    from cases import cases
 
-    results = [test_case(HOST, PORT, case) for case in cases]
+    results = [test_case(host, int(port), case) for case in cases]
 
     print("\nPassed", sum(results), "out of", len(results), "tests\n")
 

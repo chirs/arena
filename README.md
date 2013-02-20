@@ -102,13 +102,13 @@ chess is in the pipeline, let us know if you would like to see it implemented.
 
 To run the test suite:
 
-(i) Start the game server in one terminal:
+(i) Start the game server on a host and port in one terminal:
 
-`$ python3 supervise.py 34.23.54.34 12345`
+`$ python3 supervise.py localhost 12345`
 
-(ii) In another terminal, run the test:
+(ii) In another terminal, run the test on the same host and port:
 
-`$ python3 test/test.py`
+`$ python3 test/test.py localhost 12345`
 
 ## Wish List
 * Handle multiple checkers jumps in one turn 
