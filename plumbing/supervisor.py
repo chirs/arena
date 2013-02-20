@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 import json
 import select
@@ -100,8 +100,3 @@ def supervise(host, port):
         # Clean up.
         active_matches = [e for e in active_matches if e not in complete_matches]
         complete_matches = []
-                
-if __name__ == "__main__":
-    [_, host, port] = sys.argv
-    supervise(host, int(port))
- 
