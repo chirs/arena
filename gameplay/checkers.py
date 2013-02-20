@@ -4,8 +4,8 @@ from gameplay.game import Game
 class Checkers(Game):
 
     player_mapping = {
-        1: 'b',
-        2: 'r',
+        1: 'r',
+        2: 'w',
         }
 
     def __init__(self, board=None, current_player=1):
@@ -19,8 +19,8 @@ class Checkers(Game):
         Initial board state.
         """
         rx = ' r r r rr r r r  r r r r'
-        bx = 'b b b b  b b b bb b b b '
-        return rx + ' ' * 16 + bx
+        wx = 'w w w w  w w w ww w w w '
+        return rx + ' ' * 16 + wx
 
     def draw_board(self):
         s = ''
@@ -39,7 +39,7 @@ class Checkers(Game):
             return None
         elif piece == 'r':
             return 1
-        elif piece == 'b':
+        elif piece == 'w':
             return -1
 
     def get_opponent(self, p):
@@ -47,8 +47,8 @@ class Checkers(Game):
         Returns char symbol for opponent.
         """
         if p in 'Rr':
-            return 'b'
-        elif p in 'Bb':
+            return 'w'
+        elif p in 'Ww':
             return 'r'
         else:
             return None
@@ -57,9 +57,9 @@ class Checkers(Game):
 
         bl = self.board.lower()
 
-        if 'r' not in bl:
+        if 'w' not in bl:
             return 1
-        elif 'b' not in bl:
+        elif 'r' not in bl:
             return 2
         elif self.moves_without_capture >50:
             return -1
@@ -89,8 +89,8 @@ class Checkers(Game):
             board_list[jumped_p] = ' '
 
         for position in range(0, 8):
-            if board_list[position] == 'b':
-                board_list[position] = 'B'
+            if board_list[position] == 'w':
+                board_list[position] = 'W'
 
         for position in range(56, 64):
             if board_list[position] == 'r':
@@ -107,42 +107,38 @@ class Checkers(Game):
         """
         Verify that a move is legal.
         """
-        start_position, end_position = move
 
-        if start_position > 63 or end_position > 63:
+        if any([pos<0 or pos>63 for pos in move]):
+            return false
+
+        start_position, *visited_squares = move
+
+        player = self.player_mapping[self.current_player]
+
+        if  self.board[start_postion].lower() != player:
             return False
 
-        if start_position < 0 or end_position < 0:
-            return False
+        if any([square != ' ' for square in visited_squares]):
+            return false
 
-        start_cell = self.board[start_position]
-        end_cell = self.board[end_position]
-
-        if  start_cell.lower() != self.player_mapping[self.current_player]:
-            return False
-
-        if end_cell != ' ':
-            return False
-
-        player = start_cell.lower()
-        direction = self.get_direction(start_cell)
+        direction = self.get_direction(player)
 
         # Check for forced jumps.
-        valid_captures = self.valid_capture_moves(player, direction)
+        valid_captures = self.captures(player, direction)
         if valid_captures:
-            return tuple(move) in valid_captures
+            return move in valid_captures
         else:
-            return end_position in self.moves(start_position, direction)
+            return move in self.moves(start_position, direction)
 
-    def valid_capture_moves(self, player, direction=None):
+    def captures(self, player, direction):
         """
-        Capture moves that will actually result in a capture.
+        Returns all potential capture moves
         """
-        opponent = self.get_opponent(player)    
-        positions = [i for i, char in enumerate(self.board) if char.lower() == player]
+        opponent = self.get_opponent(player)
+        start_positions = [i for i, char in enumerate(self.board) if char.lower() == player]
         captures = []
     
-        for position in positions:
+        for position in start_positions:
             potential_captures = self.capture_moves(position, direction)
             for end_p in potential_captures:
                 jumped_p = int((position + end_p) / 2) # jumped_p should always be an integer
@@ -153,45 +149,27 @@ class Checkers(Game):
         return captures
 
 
-    def moves(self, position, direction):
+    def moves(self, start_position, direction):
         """
         All potential non-capture moves (1 diagonal square away); no collision detection
         """
 
-        if position % 8 == 0:
-            moves = [position + 9, position - 7]
+        # Handle left and right borders
+        if start_position % 8 == 0:
+            end_positions = [start_position + 9, start_position - 7]
         elif position % 8 == 7:
-            moves = [position + 7, position - 9]
+            end_positions = [start_position + 7, start_position - 9]
         else:
-            moves = [position + 7, position + 9, position - 7, position - 9]
+            end_positions = [start_position + 7, start_position + 9, start_position - 7, start_position - 9]
 
-        moves = [e for e in moves if 0 <= e <= 63]
+        # Handle bottom and top borders
+        end_positions = [p for p in end_positions if 0 <= e <= 63]
 
+        # Handle direction of play
         if direction == 1:
-            return [e for e in moves if e > position]
+            end_positions = [e for e in moves if e > position]
         elif direction == -1:
-            return [e for e in moves if e < position]
-        else:
-            return moves
+            end_positions = [e for e in moves if e < position]
     
-
-    def capture_moves(self, position, direction):
-        """
-        All potential capture moves (i.e. moves two diagonal squares away; no collision detection
-        """
-        if position % 8 in (0,1):
-            moves = [position + 18, position - 14]
-        elif position % 8 in (6,7):
-            moves = [position - 18, position + 14]
-        else:
-            moves = [position + 14, position + 18, position - 14, position - 18]
-
-        moves = [e for e in moves if 0 <= e <= 63]
-
-        if direction == 1:
-            return [e for e in moves if e > position]
-        elif direction == -1:
-            return [e for e in moves if e < position]
-        else:
-            return moves
+        return [[start_position, p] for p in end_positions]
 
