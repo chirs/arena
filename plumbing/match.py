@@ -1,22 +1,12 @@
 
 import datetime
 
-from gameplay.tictactoe import TicTacToe
-from gameplay.checkers import Checkers
-from gameplay.connect4 import ConnectFour
-
 class Match(object):
     # Represents a game currently being played between two networked players.
 
-    GAMES = {
-        'tictactoe': TicTacToe, 
-        'checkers': Checkers, 
-        'connectfour':ConnectFour,
-        }
-
-    def __init__(self, gname):
+    def __init__(self, gname, gobj):
         self.gname = gname
-        self.game = self.GAMES[gname]()
+        self.game = gobj
         self.players = []
         self.history = []
         self.last_move_time = None
