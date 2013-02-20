@@ -2,7 +2,6 @@
 import sys
 import random
 
-from gameplay.checkers import Checkers
 from client import play, connect
 
 def play_checkers(host, port):
@@ -10,14 +9,20 @@ def play_checkers(host, port):
     return play(sock, get_move)
 
 def get_move(state):
+
     board = state['board']
-    while True:
-        p1 = random.randint(0, 63)
-        p2 = p1 + random.choice([-18, -14, -9, -7, 7, 9, 14, 18])
-        move = (p1, p2)
-        game = Checkers(board, state['player'])
-        if game.move_legal(move):
-            return move
+    player = 'r' if state['player'] == 1 else 'w'
+    direction = 1 if player == 'r' else -1
+
+    positions = [i for i,char in enumerate(board) if char.lower() == player]
+    for position in positions:
+        if(board[position + direction*7] == ' '):
+            return (position, position + direction*7)
+        elif(board[position + direction*9] == ' '):
+            return  (position, position + direction*9)
+
+    # Couldnt find one dumb move, return anything
+    return  (1,8)
 
 if __name__ == "__main__":
     [_, host, port] = sys.argv
