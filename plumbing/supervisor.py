@@ -15,16 +15,26 @@ def supervise(host, port):
         pending_connection, _, _ = select.select([listen_sock], '', '', 0)
         if pending_connection:
             player_sock, _ = listen_sock.accept()
-            handshake = player_sock.recv(1028).decode()
-            handshake_json = json.loads(handshake)
-            game_string = handshake_json['game']
+
+            # Receive play request
+            request = player_sock.recv(1028).decode()
+            request_json = json.loads(request)
+            game_string = request_json['game']
+
+            # Build acknowledgment
+            acknowledgment = {'name' : game_string, 'timelimit':5}
 
             eligible_matches = [e for e in match_list if e.is_waiting() and e.gname == game_string]
             if eligible_matches:
                 match = eligible_matches[0]
+                acknowledgment['player'] = 2
             else:
                 match = Match(game_string)
                 match_list.append(match)
+                acknowledgment['player'] = 1
+
+            # Send acknowledgment
+            send_json(player_sock, acknowledgment)
 
             match.add_player(player_sock)
 

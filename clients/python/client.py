@@ -7,6 +7,10 @@ def connect(host, port, game):
     sock.connect((host, port))
     params = {'game':game}
     sock.sendall(json.dumps(params).encode())
+
+    # receive acknowledgment, do nothing with it for now
+    _ = sock.recv(1000)
+
     return sock
 
 def play(sock, move_function):

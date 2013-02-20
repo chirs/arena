@@ -99,3 +99,4 @@ connectfour and chess are in the pipeline, let us know if you would like to see 
 * Write clients in different languages
 * Build some kind of test suite
 * Documentation
+
