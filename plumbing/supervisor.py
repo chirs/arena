@@ -1,12 +1,10 @@
-#!/usr/bin/python3
 
 import json
 import select
 import sys
 
-from match import Match
-from server import make_listen_sock, get_json, send_json
-
+from .match import Match
+from .server import make_listen_sock, get_json, send_json
 
 def supervise(host, port):
 
@@ -100,8 +98,3 @@ def supervise(host, port):
         # Clean up.
         active_matches = [e for e in active_matches if e not in complete_matches]
         complete_matches = []
-                
-if __name__ == "__main__":
-    [_, host, port] = sys.argv
-    supervise(host, int(port))
- 
