@@ -141,6 +141,9 @@ class ConnectFour(Game):
 
 
     def result_for_cell(self, index):
+        if self.board[index] == ' ':
+            return False
+
         return self.check_horizontal(index) or\
             self.check_vertical(index) or\
             self.check_diagonal1(index) or \
