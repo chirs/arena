@@ -70,20 +70,20 @@ def supervise(host, port):
 
         if result != 0:
             match.game.draw_board()
-            complete_matches.append(match)
+            complete_matches.add(match)
             for i, player in enumerate(match.players, start=1):
                 send_json(player, match.build_state(player=i, result=result))
 
         elif moved is True:
             match.game.draw_board()
             send_json(match.get_current_socket(), match.build_state())
-                        
+
 
     active_matches = []
-    complete_matches = []
+    complete_matches = set()
 
     listen_sock = make_listen_sock(host, port)
-    
+
     while True:
         # Check for new connection.
         handle_new_connection(listen_sock, active_matches)
@@ -97,4 +97,4 @@ def supervise(host, port):
 
         # Clean up.
         active_matches = [e for e in active_matches if e not in complete_matches]
-        complete_matches = []
+        complete_matches = set()
