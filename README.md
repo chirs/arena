@@ -80,7 +80,7 @@ Steps (iv) and (v) are repeated until the game is over.
     <th>Name</th><th>Board representation</th><th>Move representation</th>
   </tr>
   <tr>
-    <td>checkers</td>
+    <td>checkers (i.e. English draughts)</td>
     <td>A 64 char-long string. Char position runs from left to right, top to bottom (e.g. position 10 represents the third square from the left in the second row from the top). Spaces (' ') represent empty squares, 'b' represents a player 1 pawn, 'B' represents a player 1 king. 'r' and 'R' are the same for player 2.</td>
     <td>A string encapsulating a 2 elements-long array with the beginning index and the end index (e.g. "[0,9]").</td>
   </tr>
