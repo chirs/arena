@@ -1,7 +1,6 @@
 
 from gameplay.game import Game
 
-
 class TicTacToe(Game):
 
     player_mapping = {
@@ -13,11 +12,9 @@ class TicTacToe(Game):
         self.board = board or self.initial_board()
         self.current_player = current_player
 
-
     @staticmethod
     def initial_board():
         return ' ' * 9  
-
 
     def draw_board(self):
         print(self.board[:3])
@@ -35,7 +32,7 @@ class TicTacToe(Game):
         #return new_game
         
     def move_legal(self, move):
-        return self.board[move] == ' '
+        return 0 <= move <9 and self.board[move] == ' '
 
 
     def is_tie(self):

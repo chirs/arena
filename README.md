@@ -93,10 +93,25 @@ Steps (iv) and (v) are repeated until the game is over.
 
 connectfour and chess are in the pipeline, let us know if you would like to see them implemented.
 
+## Test Suite
+
+To run the test suite:
+
+(i) Start the game server in one terminal:
+
+`$ plumbing/supervisor.py 34.23.54.34 12345`
+
+(ii) In another terminal, generate the test cases:
+
+`$ test/gen_cases.py`
+
+(iii) then run the tests:
+
+`$ test/test.py`
+
 ## Wish List
-* Improve initial "handshake" with client, specifying the game played, player number, time limit for move, etc...
-* Add time periods players have to submit their move within
+* Handle multiple jumps in one turn 
 * Write clients in different languages
-* Build some kind of test suite
+* Improve the test suite
 * Documentation
 
