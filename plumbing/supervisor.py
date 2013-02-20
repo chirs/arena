@@ -70,8 +70,6 @@ def supervise(host, port):
         if result is None:
             result = match.game.result()
 
-
-
         if result != 0:
             match.game.draw_board()
             complete_matches.append(match)
@@ -83,7 +81,6 @@ def supervise(host, port):
             send_json(match.get_current_socket(), match.build_state())
                         
 
-        
     active_matches = []
     complete_matches = []
 

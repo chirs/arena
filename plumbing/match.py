@@ -41,8 +41,6 @@ class Match(object):
         self.history.append(move)
         self.set_last_move_time()
 
-
-
     def set_last_move_time(self, t=None):
         if t is None:
             t = datetime.datetime.now()

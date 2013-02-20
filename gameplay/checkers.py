@@ -30,7 +30,6 @@ class Checkers(Game):
         s += '=' * 8
         print(s)
 
-
     def is_king(self, char):
         return not char.islower()
 
@@ -54,11 +53,7 @@ class Checkers(Game):
         else:
             return None
 
-
-    def is_tie(self):
-        return self.moves_without_capture > 50
-
-    def winner(self):
+    def result(self):
 
         bl = self.board.lower()
 
@@ -66,18 +61,17 @@ class Checkers(Game):
             return 1
         elif 'b' not in bl:
             return 2
+        elif self.moves_without_capture >50:
+            return -1
         else:
             return 0
 
-    def result(self):
-
-        if self.is_tie():
-            return -1
-        else:
-            return self.winner()
-
-    def transition(self, move, player):
-
+    def apply_move(self, initial_board, move):
+        """
+        Takes the string representation of the board
+        and apply the move to it. Return the resulting
+        board
+        """
         start_p, end_p = move
 
         distance = abs(start_p - end_p)
@@ -102,8 +96,12 @@ class Checkers(Game):
             if board_list[position] == 'r':
                 board_list[position] = 'R'
 
+        return ''.join(board_list)
+       
+    def transition(self, move, _): # No need to use the third argument (player) for checkers
+
+        self.board = self.apply_move(self.board, move)
         self.current_player = 3 - self.current_player # Toggle between 1 and 2.
-        self.board = ''.join(board_list)
 
     def move_legal(self, move):
         """

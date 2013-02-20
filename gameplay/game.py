@@ -1,6 +1,4 @@
 
-
-
 class Game(object):
     """
     An abstract Game object.
@@ -16,7 +14,6 @@ class Game(object):
     def draw_board(self):
         raise NotImplementedError
 
-
     def move_legal(self, move):
         raise NotImplementedError
 
@@ -25,3 +22,4 @@ class Game(object):
     
     def result(self):
         raise NotImplementedError
+
