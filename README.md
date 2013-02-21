@@ -111,6 +111,7 @@ To run the test suite:
 `$ python3 test/test.py localhost 12345`
 
 ## Wish List
+* Better handling of client crash
 * Handle multiple checkers jumps in one turn 
 * Write clients in different languages
 * Improve the test suite

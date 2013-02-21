@@ -54,14 +54,14 @@ def test_case(host, port, case):
             [s.close() for s in sockets] # Close sockets
             return False
 
-        outcome = state['winner']
+        outcome = state['result']
 
     # Receive game result
-    if case['result']:
+    if case['result']: 
         for socket_ in sockets:
             msg = socket_.recv(10000).decode() # Made this very large to accomodate history data.
             state = json.loads(msg)
-            outcome = state['winner']
+            outcome = state['result']
 
     # Check correct game outcome
     try:
