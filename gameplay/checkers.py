@@ -108,6 +108,7 @@ class Checkers(Game):
         Verify that a move is legal.
         """
 
+        # Check for out-of-bounds moves
         if any([pos<0 or pos>63 for pos in move]):
             return false
 
@@ -115,9 +116,11 @@ class Checkers(Game):
 
         player = self.player_mapping[self.current_player]
 
+        # Check if starting position is correct player
         if  self.board[start_postion].lower() != player:
             return False
 
+        # Check if all visited squares are empty
         if any([square != ' ' for square in visited_squares]):
             return false
 
@@ -130,25 +133,48 @@ class Checkers(Game):
         else:
             return move in self.moves(start_position, direction)
 
-    def captures(self, player, direction):
+    def captures(self, player):
         """
         Returns all potential capture moves
         """
-        opponent = self.get_opponent(player)
         start_positions = [i for i, char in enumerate(self.board) if char.lower() == player]
         captures = []
+        for pos in start_positions:
+            paths = self.captures(pos, self.board)
+            yield [pos] + path for path in paths
+
+    def captures(self, start_pos, board): 
+        """
+        Returns all potential capture moves for a given start position and board
+        """
+        player = board[start_pos]
+        opponent = self.get_opponent(player)
+        direction = self.get_direction(player)
+
+        # Handle left and right borders
+        if start_pos % 8 in [0,1]:
+            end_positions = [start_pos + 18, start_pos - 14]
+        elif start_pos % 8 in [6,7]:
+            end_positions = [start_pos + 14, start_pos - 18]
+        else:
+            end_positions = [start_pos + 18, start_pos + 14, start_pos - 14, start_pos - 18]
+
+        # Handle bottom and top borders
+        end_positions = [p for p in end_positions if 0 <= e <= 63]
+
+        # Make sure there is a captured pawn
+        end_positions = [p for p in end_positions if board[(start_pos+p)//2].lower() == opponent]
+
+        # Handle direction of play
+        if direction == 1:
+            end_positions = [e for e in moves if e > position]
+        elif direction == -1:
+            end_positions = [e for e in moves if e < position]
+
+        for end_pos in end_positions:
+            paths = self.capture(end_pos, self.apply_move(board, [start_pos,end_pos]))
+            yield [end_pos] + path for path in paths
     
-        for position in start_positions:
-            potential_captures = self.capture_moves(position, direction)
-            for end_p in potential_captures:
-                jumped_p = int((position + end_p) / 2) # jumped_p should always be an integer
-                if self.board[end_p] == ' ' and self.board[jumped_p].lower() == opponent:
-                    t = (position, end_p)
-                    captures.append(t)
-            
-        return captures
-
-
     def moves(self, start_position, direction):
         """
         All potential non-capture moves (1 diagonal square away); no collision detection
