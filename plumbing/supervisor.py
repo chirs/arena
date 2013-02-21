@@ -1,7 +1,6 @@
 
 import json
 import select
-import sys
 
 from .match import Match
 from .server import make_listen_sock, get_json, send_json

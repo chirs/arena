@@ -2,7 +2,9 @@
 import datetime
 
 class Match(object):
-    # Represents a game currently being played between two networked players.
+    """
+    Represents a game currently being played between two networked players.
+    """
 
     def __init__(self, gname, gobj):
         self.gname = gname
@@ -10,6 +12,17 @@ class Match(object):
         self.players = []
         self.history = []
         self.last_move_time = None
+        self.game_id = self.create_game_id()
+
+
+    def create_game_id(self):
+        s = datetime.datetime.now().isoformat().encode()
+        return hashlib.sha1(s).hexdigest()
+
+    def create_move_id(self):
+        s = datetime.datetime.now().isoformat()
+        s2 = ("%s %s" % (self.game_id, s)).encode()
+        return hashlib.sha1(s2).hexdigest()
 
     def add_player(self, socket):
         self.players.append(socket)
@@ -54,7 +67,10 @@ class Match(object):
         return {
             'player': player,
             'board': self.game.board,
-            'winner': result,
-            'history': self.history
+            'result': result,
+            'move_id': self.create_move_id()
+            #'score': score,
+            #'history': self.history
+
             }
 
