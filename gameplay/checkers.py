@@ -4,8 +4,8 @@ from gameplay.game import Game
 class Checkers(Game):
 
     player_mapping = {
-        1: 'b',
-        2: 'r',
+        1: 'r',
+        2: 'w',
         }
 
     def __init__(self, board=None, current_player=1):
@@ -19,8 +19,8 @@ class Checkers(Game):
         Initial board state.
         """
         rx = ' r r r rr r r r  r r r r'
-        bx = 'b b b b  b b b bb b b b '
-        return rx + ' ' * 16 + bx
+        wx = 'w w w w  w w w ww w w w '
+        return rx + ' ' * 16 + wx
 
     def draw_board(self):
         s = ''
@@ -39,7 +39,7 @@ class Checkers(Game):
             return None
         elif piece == 'r':
             return 1
-        elif piece == 'b':
+        elif piece == 'w':
             return -1
 
     def get_opponent(self, p):
@@ -47,8 +47,8 @@ class Checkers(Game):
         Returns char symbol for opponent.
         """
         if p in 'Rr':
-            return 'b'
-        elif p in 'Bb':
+            return 'w'
+        elif p in 'Ww':
             return 'r'
         else:
             return None
@@ -59,7 +59,7 @@ class Checkers(Game):
 
         if 'r' not in bl:
             return 1
-        elif 'b' not in bl:
+        elif 'w' not in bl:
             return 2
         elif self.moves_without_capture >50:
             return -1
@@ -89,8 +89,8 @@ class Checkers(Game):
             board_list[jumped_p] = ' '
 
         for position in range(0, 8):
-            if board_list[position] == 'b':
-                board_list[position] = 'B'
+            if board_list[position] == 'w':
+                board_list[position] = 'W'
 
         for position in range(56, 64):
             if board_list[position] == 'r':

@@ -15,11 +15,18 @@ def get_move(state):
     direction = 1 if player == 'r' else -1
 
     positions = [i for i,char in enumerate(board) if char.lower() == player]
+    
     for position in positions:
-        if(board[position + direction*7] == ' '):
-            return (position, position + direction*7)
-        elif(board[position + direction*9] == ' '):
-            return  (position, position + direction*9)
+        if direction == 1:
+            if position % 8 != 0 and board[position + 7] == ' ':
+                return (position, position + 7)
+            elif position % 8 != 7 and board[position + 9] == ' ':
+                return (position, position + 9)
+        else:
+            if position % 8 != 7 and board[position - 7] == ' ':
+                return (position, position - 7)
+            elif position % 8 != 0 and board[position - 9] == ' ':
+                return (position, position - 9)
 
     # Couldnt find one dumb move, return anything
     return  (1,8)
