@@ -36,7 +36,7 @@ between the client (a.k.a. AI player) and the server:
     |  &lt;--------------------------------------------------------  |
     |                                                             |
     |                                                             |
-    |       "{token:a8bdT%d#, board:"  x      ", winner:0}"       |
+    |       "{token:a8bdT%d#, board:"  x      ", result:0}"       |
     |  &lt;--------------------------------------------------------  |
     |                                                             |
     |                                                             |
@@ -44,7 +44,7 @@ between the client (a.k.a. AI player) and the server:
     |  --------------------------------------------------------&gt;  |
     |                                                             |
     |                                                             |
-    |       "{token:45&d$X3f, board:" xx o    ", winner:0}"       |
+    |       "{token:45&d$X3f, board:" xx o    ", result:0}"       |
     |  &lt;--------------------------------------------------------  |
     |                                                             |
     |                                                             |
@@ -52,11 +52,11 @@ between the client (a.k.a. AI player) and the server:
     |  --------------------------------------------------------&gt;  |
     |                                                             |
     |                                                             |
-    |       "{token:$asDF@7G, board:"xxxoo    ", winner:1}"       |
+    |       "{token:$asDF@7G, board:"xxxoo    ", result:1}"       |
     |  &lt;--------------------------------------------------------  |
     |                                                             |
     |                                                             |
-    |       "{history:"24130", log:"", winner:1, player:2}"       |
+    |       "{history:"24130", log:"", result:1, player:2}"       |
     |  &lt;--------------------------------------------------------  |
     |                                                             |
                             DISCONNECTION
@@ -100,7 +100,7 @@ An example acknowledgement would be "{name:tictactoe, player:2, timelimit:5}".
     <td>board</td><td>board representation (see [supported games section](#games)</td>
   </tr>
   <tr>
-    <td>winner</td><td>-1 is tie, 0 is game ongoing, 1 is player 1 wins, 2 is player 2 wins</td>
+    <td>result</td><td>-1 is tie, 0 is game ongoing, 1 is player 1 wins, 2 is player 2 wins</td>
   </tr>
   <tr>
     <td>history</td><td>A list holding the sequence of moves done in the game</td>
@@ -110,7 +110,7 @@ An example acknowledgement would be "{name:tictactoe, player:2, timelimit:5}".
   </tr>
 </table>
 
-An example of game state would be "{player:2, board:"xoxoxo   ", winner:0, history:[0,1,2,3,4,5], log:""}.
+An example of game state would be "{player:2, board:"xoxoxo   ", result:0, history:[0,1,2,3,4,5], log:""}.
 
 (v) The AI player sends the server a move (see [supported games section](#games) for the representation of moves for the different games)
 

@@ -39,8 +39,7 @@ class Match(object):
         return self.players[current_player-1]
 
     def make_move(self, move):
-        print("Moving")
-        print("CP: %s" % self.game.current_player)
+        print
         self.game.transition(move, self.game.current_player)
         self.history.append(move)
         self.set_last_move_time()
@@ -55,6 +54,7 @@ class Match(object):
             return False
 
         seconds = (datetime.datetime.now() - self.last_move_time).seconds
+        return False
         return seconds > 5
 
     def build_state(self, player=None, result=None):
