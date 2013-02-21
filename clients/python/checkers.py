@@ -15,6 +15,7 @@ def get_move(state):
     direction = 1 if player == 'r' else -1
 
     positions = [i for i,char in enumerate(board) if char.lower() == player]
+    random.shuffle(positions)
     
     for position in positions:
         if direction == 1:
