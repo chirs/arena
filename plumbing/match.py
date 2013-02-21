@@ -1,5 +1,6 @@
 
 import datetime
+import hashlib
 
 class Match(object):
     """
@@ -68,9 +69,9 @@ class Match(object):
             'player': player,
             'board': self.game.board,
             'result': result,
-            'move_id': self.create_move_id()
+            'move_id': self.create_move_id(),
             #'score': score,
-            #'history': self.history
+            'history': self.history,
 
             }
 
