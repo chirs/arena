@@ -23,17 +23,25 @@ class TestSequenceFunctions(unittest.TestCase):
 
 
     def test_minimax_score(self):
+        # Minimax score assumes you are the next player to move.
+        # Don't call it with the wrong player argument - will not give a 
+        # trustworthy answer.
 
         # Verify minimax works with a complete board.
-        self.assertTrue(TicTacToe('xoxxoxoxo').minimax_score(1) == 0)
-        self.assertTrue(TicTacToe('xoxxoxoxo').minimax_score(2) == 0)
+        self.assertTrue(TicTacToe('xoxxoxoxo').minimax_score() == 0)
+        self.assertTrue(TicTacToe('xx ooxxo ').minimax_score() == 0)
 
-        # Here there be errors.
-        self.assertTrue(TicTacToe('xx oo    ').minimax_score(1) == 1)
-        self.assertTrue(TicTacToe('xx oo    ').minimax_score(2) == -1)
+        self.assertTrue(TicTacToe('xx oo xox').minimax_score() == 1)
+        self.assertTrue(TicTacToe('xx oo xo ').minimax_score() == 1)
+        self.assertTrue(TicTacToe('xx oo   x').minimax_score() == 1)
 
-        #self.assertTrue(TicTacToe('xx oo   x').minimax_score(1) == -1)
-        #self.assertTrue(TicTacToe('xx oo   x').minimax_score(2) == 1)
+
+        self.assertTrue(TicTacToe('xox      ').minimax_move() == 4)
+        self.assertTrue(TicTacToe('xoxo     ').minimax_move() == 4)
+
+        self.assertTrue(TicTacToe('xx oo   x').minimax_move() == 5)
+        self.assertTrue(TicTacToe('xx oo    ').minimax_move() == 2)
+        
 
 
 if __name__ == '__main__':

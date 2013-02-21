@@ -86,9 +86,15 @@ class TicTacToe(object):
 
 
 
-    def minimax_score(self, player):
+    def minimax_score(self):
+        #print len(self.memo)
+
+        player = self.current_player()
+
         if (player, self.board) in self.memo:
             return self.memo[(player, self.board)]
+
+        #import pdb; pdb.set_trace()
 
         score = self.board_score(player)
         if score is not None:
@@ -101,19 +107,18 @@ class TicTacToe(object):
         else:
             potential_moves = self.get_legal_moves()
             potential_states = [self.transition(move) for move in potential_moves]
-            opponent = self.opponent(player)
-            scores = [-1 * state.minimax_score(opponent) for state in potential_states]
+            scores = [-1 * state.minimax_score() for state in potential_states] # Reverse because this is opponent's minimax score.
 
             #self.draw_board()
             #print("Score: %s, player: %s" % (max(scores), player))
 
             return max(scores)
 
-    def minimax_move(self, player):
+    def minimax_move(self):
         potential_moves = self.get_legal_moves()
         potential_states = [self.transition(move) for move in potential_moves]
-        scores = [state.minimax_score(player) for state in potential_states]
-        best_score = max(scores)
+        scores = [state.minimax_score() for state in potential_states]
+        best_score = min(scores)
         move_index = scores.index(best_score)
         return potential_moves[move_index]
 
@@ -139,12 +144,16 @@ def play_tictactoe(host, port):
     return play(sock, get_move)
 
 def get_move(state):
+    #import pdb; pdb.set_trace()
     board = state['board']
-    for i, e in enumerate(board):
-        if e == ' ':
-            return i
+    t = TicTacToe(board)
+    move = t.minimax_move(t.current_player)
+    return move
+    
 
 if __name__ == "__main__":
+    play_tictactoe('', 12345)
+
     #print(TicTacToe('xxx      ').board_score(1))
     #print(TicTacToe('ooo      ').board_score(1))
     
@@ -152,12 +161,12 @@ if __name__ == "__main__":
     #print c.minimax_score('x')
 
     #c = TicTacToe('xx oo ox ')
-    c = TicTacToe('xox      ')
-    c.draw_board()
+    #c = TicTacToe('xox      ')
+    #c.draw_board()
 
-    while not c.over():
-        move = c.minimax_move(c.current_player())
-        c = c.transition(move)
-        c.draw_board()        
+    #while not c.over():
+    #    move = c.minimax_move(c.current_player())
+    #    c = c.transition(move)
+    #    c.draw_board()        
 
 
