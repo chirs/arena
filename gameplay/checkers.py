@@ -110,7 +110,7 @@ class Checkers(Game):
 
         # Check for out-of-bounds moves
         if any([pos<0 or pos>63 for pos in move]):
-            return false
+            return False
 
         start_position, *visited_squares = move
 
@@ -122,7 +122,7 @@ class Checkers(Game):
 
         # Check if all visited squares are empty
         if any([square != ' ' for square in visited_squares]):
-            return false
+            return False
 
         direction = self.get_direction(player)
 
