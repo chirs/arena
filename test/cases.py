@@ -23,6 +23,42 @@ tictactoe_cases = [
 
 ### checkers cases ###
 
+checkers_cases = [
+
+#    {
+#        'name': 'tictactoe',
+#        'history': [(1, 9)], # Illegal move - invalid move.
+#        'result': 0,
+#        },
+
+
+    {
+        'name': 'tictactoe',
+        'history': [(1, 9)], # Illegal move - invalid move.
+        'result': 2,
+        },
+
+    {
+        'name': 'tictactoe',
+        'history': [(0, 9)], # Illegal move - no piece.
+        'result': 2,
+        },
+
+
+    {
+        'name': 'tictactoe',
+        'history': [(40, 33)], # Illegal move - opponent's piece.
+        'result': 2,
+        },
+
+    {
+        'name': 'tictactoe',
+        'history': [(17, 26), (40, 32)], # Illegal move by second opponent.
+        'result': 1,
+        },
+
+]
+
 
 ### connect four cases ###
 connectfour_cases = [
