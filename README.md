@@ -20,7 +20,50 @@ In another terminal, connect player 2:
 
 ## API
 
-This section covers the API calls a client needs to handle. A game basically consist of three steps:
+This section covers the API calls a client needs to handle. Here's a sketch of the communications
+between the client (a.k.a. AI player) and the server:
+
+<pre>
+                              CONNECTION
+  Client                                                       Server
+    |                                                             |
+    |                                                             |
+    |                     "{game:tictactoe}"                      |
+    |  --------------------------------------------------------&gt;  |
+    |                                                             |
+    |                                                             |
+    |            "{game:tictactoe, player:2, timelimit:5}"        |
+    |  &lt;--------------------------------------------------------  |
+    |                                                             |
+    |                                                             |
+    |       "{token:a8bdT%d#, board:"  x      ", winner:0}"       |
+    |  &lt;--------------------------------------------------------  |
+    |                                                             |
+    |                                                             |
+    |                "{token:ae8bdT%kd#, move:4}"                 |
+    |  --------------------------------------------------------&gt;  |
+    |                                                             |
+    |                                                             |
+    |       "{token:45&d$X3f, board:" xx o    ", winner:0}"       |
+    |  &lt;--------------------------------------------------------  |
+    |                                                             |
+    |                                                             |
+    |                "{token:45&d$X3f, move:3}"                   |
+    |  --------------------------------------------------------&gt;  |
+    |                                                             |
+    |                                                             |
+    |       "{token:$asDF@7G, board:"xxxoo    ", winner:1}"       |
+    |  &lt;--------------------------------------------------------  |
+    |                                                             |
+    |                                                             |
+    |       "{history:"24130", log:"", winner:1, player:2}"       |
+    |  &lt;--------------------------------------------------------  |
+    |                                                             |
+                            DISCONNECTION
+
+</pre>
+
+A game basically consist of three steps:
 
 (i) The AI client connects to the game server (host ??? and port ???)
 
