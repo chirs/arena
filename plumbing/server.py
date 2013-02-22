@@ -10,10 +10,9 @@ def make_listen_sock(host, port):
 
 def get_json(player_socket):
     msg = player_socket.recv(1028).decode()
-    
-    if msg:
+    try:
         return json.loads(msg)
-    else:
+    except ValueError:
         return None
 
 def send_json(player_socket, json_):

@@ -50,12 +50,11 @@ def supervise(host, port, known_games):
         if sock in readable_sockets:
             move = get_json(sock)
 
-            if match.game.move_legal(move):
+            if move is not None and match.game.move_legal(move):
                 match.make_move(move)
                 moved = True
-
             else:
-                print("Game over. Player %s forfeits because of illegal move." % match.game.current_player)
+                print("Game over. Player %s forfeits because of illegal move or disconnect." % match.game.current_player)
                 result = 3 - match.game.current_player
 
         # No move has been made.
