@@ -66,37 +66,42 @@ class Checkers(Game):
         else:
             return 0
 
-    def apply_move(self, initial_board, move):
+    def apply_move(self, board, move):
         """
         Takes the string representation of the board
         and apply the move to it. Return the resulting
-        board
+        board. move can be a multiple capture.
         """
-        start_p, end_p = move
+        start_pos, *visited_squares = move
 
-        distance = abs(start_p - end_p)
+        for end_pos in visited_squares:
 
-        if distance > 9:
-            self.moves_without_capture = 0
-        else:
-            self.moves_without_capture += 1
+            distance = abs(end_pos - start_pos)
 
-        board_list = list(self.board)
-        board_list[start_p], board_list[end_p] = self.board[end_p], self.board[start_p]    
+            board_list = list(board)
+            board_list[start_pos], board_list[end_pos] = board[end_pos], board[start_pos]    
 
-        if distance > 9:
-            jumped_p = int((start_p + end_p) / 2)
-            board_list[jumped_p] = ' '
+            if distance > 9:
+                # Keep track of no-capture counter for tie games
+                self.moves_without_capture = 0
+                jumped_pos = (start_pos + end_pos) // 2
+                board_list[jumped_pos] = ' '
+            else:
+                self.moves_without_capture += 1
 
-        for position in range(0, 8):
-            if board_list[position] == 'w':
-                board_list[position] = 'W'
+            # Make pawn that reached the other end of the board kings
+            for position in range(0, 8):
+                if board_list[position] == 'w':
+                    board_list[position] = 'W'
 
-        for position in range(56, 64):
-            if board_list[position] == 'r':
-                board_list[position] = 'R'
+            for position in range(56, 64):
+                if board_list[position] == 'r':
+                    board_list[position] = 'R'
 
-        return ''.join(board_list)
+            board = ''.join(board_list)
+            start_pos = end_pos
+
+        return board
        
     def transition(self, move, _): # No need to use the third argument (player) for checkers
 
@@ -107,7 +112,6 @@ class Checkers(Game):
         """
         Verify that a move is legal.
         """
-
         # Check for out-of-bounds moves
         if any([pos<0 or pos>63 for pos in move]):
             return False
@@ -117,36 +121,39 @@ class Checkers(Game):
         player = self.player_mapping[self.current_player]
 
         # Check if starting position is correct player
-        if  self.board[start_postion].lower() != player:
+        if self.board[start_position].lower() != player:
             return False
 
         # Check if all visited squares are empty
-        if any([square != ' ' for square in visited_squares]):
+        if any([self.board[square] != ' ' for square in visited_squares]):
             return False
 
-        direction = self.get_direction(player)
-
         # Check for forced jumps.
-        valid_captures = self.captures(player, direction)
+        valid_captures = self.captures(player)
         if valid_captures:
             return move in valid_captures
         else:
-            return move in self.moves(start_position, direction)
+            direction = self.get_direction(player)
+            moves = self.moves(start_position, direction)
+            return move in moves#self.moves(start_position, direction)
 
     def captures(self, player):
         """
         Returns all potential capture moves
         """
-        start_positions = [i for i, char in enumerate(self.board) if char.lower() == player]
+        positions = [i for i, char in enumerate(self.board) if char.lower() == player]
         captures = []
-        for pos in start_positions:
-            paths = self.captures(pos, self.board)
-            yield [pos] + path for path in paths
+        for position in positions:
+            paths = self.captures_([position], self.board)
+            [captures.append(capture) for capture in paths if len(capture)>1]
 
-    def captures(self, start_pos, board): 
+        return captures
+            
+    def captures_(self, path, board): 
         """
         Returns all potential capture moves for a given start position and board
         """
+        start_pos = path[-1]
         player = board[start_pos]
         opponent = self.get_opponent(player)
         direction = self.get_direction(player)
@@ -160,20 +167,25 @@ class Checkers(Game):
             end_positions = [start_pos + 18, start_pos + 14, start_pos - 14, start_pos - 18]
 
         # Handle bottom and top borders
-        end_positions = [p for p in end_positions if 0 <= e <= 63]
+        end_positions = [pos for pos in end_positions if 0 <= pos <= 63]
 
         # Make sure there is a captured pawn
-        end_positions = [p for p in end_positions if board[(start_pos+p)//2].lower() == opponent]
+        end_positions = [pos for pos in end_positions if board[(start_pos+pos)//2].lower() == opponent]
 
         # Handle direction of play
         if direction == 1:
-            end_positions = [e for e in moves if e > position]
+            end_positions = [pos for pos in end_positions if pos > start_pos]
         elif direction == -1:
-            end_positions = [e for e in moves if e < position]
+            end_positions = [pos for pos in end_positions if pos < start_pos]
 
+        paths = []
         for end_pos in end_positions:
-            paths = self.capture(end_pos, self.apply_move(board, [start_pos,end_pos]))
-            yield [end_pos] + path for path in paths
+            new_path = path + [end_pos]
+            paths.append(self.captures_(new_path, self.apply_move(self.board, new_path)))
+        else:
+            paths.append(path)
+
+        return paths
     
     def moves(self, start_position, direction):
         """
@@ -183,19 +195,19 @@ class Checkers(Game):
         # Handle left and right borders
         if start_position % 8 == 0:
             end_positions = [start_position + 9, start_position - 7]
-        elif position % 8 == 7:
+        elif start_position % 8 == 7:
             end_positions = [start_position + 7, start_position - 9]
         else:
             end_positions = [start_position + 7, start_position + 9, start_position - 7, start_position - 9]
 
         # Handle bottom and top borders
-        end_positions = [p for p in end_positions if 0 <= e <= 63]
+        end_positions = [pos for pos in end_positions if 0 <= pos <= 63]
 
         # Handle direction of play
         if direction == 1:
-            end_positions = [e for e in moves if e > position]
+            end_positions = [pos for pos in end_positions if pos > start_position]
         elif direction == -1:
-            end_positions = [e for e in moves if e < position]
+            end_positions = [pos for pos in end_positions if pos < start_position]
     
         return [[start_position, p] for p in end_positions]
 
