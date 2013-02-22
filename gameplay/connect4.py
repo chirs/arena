@@ -3,57 +3,36 @@ from gameplay.game import Game
 
 
 def index2coords(num):
-    a, b = (num/7, num % 7)
-    return (int(a),int(b))
-
+    return (num//7, num % 7)
 
 def coords2index(coords):
-    a, b = coords
-    return int(7*a + b)
+    return 7*coords[0] + coords[1]
 
 def is_valid(coords):
-    x, y = coords
-    return 0 <= x < 6 and 0 <= y < 7
+    return 0 <= coords[0] < 6 and 0 <= coords[1] < 7
 
 class ConnectFour(Game):
     """
     An abstract Game object.
     """
 
-    player_mapping = {
-        1: 'b',
-        2: 'r',
-        }
+    player_mapping = {1: 'b', 2: 'r'}
+    color_mapping = {v: k for k, v in player_mapping.items()}
 
-    color_mapping = {
-        'b': 1,
-        'r': 2,
-        }
-
-
-    def __init__(self, board=None, current_player=1):
-        self.board = board or self.initial_board()
+    def __init__(self, board=' '*42, current_player=1):
+        self.board = board
         self.current_player = current_player
 
-    @staticmethod
-    def initial_board():
-        return ' ' * 42
-
     def draw_board(self):
-        s = ''
-        for i in range(0,42,7):
-            s += self.board[i:i+7]
-            s += '\n'
-        s += '=' * 7
+        s = '\n'.join([self.board[i:i+7] for i in range(0, 42, 7)] + ['='*7])
         print(s)
 
-    def move_legal(self, move):
+    def move_is_legal(self, move):
         """Check that the top field for the move column is open."""
-        return self.board[move] == ' ' 
-
+        return self.board[move] == ' '
 
     def transition(self, move, player):
-        coords = [(e, move) for e in reversed(range(6))]
+        coords = [(e, move) for e in range(5, -1,-1)]
         indexes = [coords2index(e) for e in coords]
         for i in indexes:
             if self.board[i] == ' ':
@@ -62,9 +41,7 @@ class ConnectFour(Game):
                 self.board = ''.join(bl)
                 self.current_player = 3 - self.current_player
                 return
-
-        raise
-
+        raise Exception("Logic Error")
 
     def is_tie(self):
         empty_spaces = [e for e in self.board if e == ' ']

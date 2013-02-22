@@ -50,7 +50,14 @@ def supervise(host, port, known_games):
         if sock in readable_sockets:
             move = get_json(sock)
 
-            if move is not None and match.game.move_legal(move):
+            try:
+                legal = match.game.move_legal(move)
+            except:
+                import traceback
+                traceback.print_last()
+                legal = False
+
+            if legal:
                 match.make_move(move)
                 moved = True
             else:
