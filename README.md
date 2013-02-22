@@ -28,36 +28,36 @@ between the client (a.k.a. AI player) and the server:
   Client                                                       Server
     |                                                             |
     |                                                             |
-    |                     "{game:tictactoe}"                      |
-    |  --------------------------------------------------------&gt;  |
+    |                     {game:"tictactoe"}                      |
+    |  ------------------------------------------------------&gt;&gt;&gt;  |
     |                                                             |
     |                                                             |
-    |            "{game:tictactoe, player:2, timelimit:5}"        |
-    |  &lt;--------------------------------------------------------  |
+    |            {game:"tictactoe", player:2, timelimit:5}        |
+    |  &lt;&lt;&lt;------------------------------------------------------  |
     |                                                             |
     |                                                             |
-    |       "{token:a8bdT%d#, board:"  x      ", result:0}"       |
-    |  &lt;--------------------------------------------------------  |
+    |       {token:"a8bdT%d#", board:"  x      ", winner:0}       |
+    |  &lt;&lt;&lt;------------------------------------------------------  |
     |                                                             |
     |                                                             |
-    |                "{token:ae8bdT%kd#, move:4}"                 |
-    |  --------------------------------------------------------&gt;  |
+    |                {token:"ae8bdT%kd#", move:4}                 |
+    |  ------------------------------------------------------&gt;&gt;&gt;  |
     |                                                             |
     |                                                             |
-    |       "{token:45&d$X3f, board:" xx o    ", result:0}"       |
-    |  &lt;--------------------------------------------------------  |
+    |       {token:"45&d$X3f", board:" xx o    ", winner:0}       |
+    |  &lt;&lt;&lt;------------------------------------------------------  |
     |                                                             |
     |                                                             |
-    |                "{token:45&d$X3f, move:3}"                   |
-    |  --------------------------------------------------------&gt;  |
+    |                {token:"45&d$X3f", move:3}                   |
+    |  ------------------------------------------------------&gt;&gt;&gt;  |
     |                                                             |
     |                                                             |
-    |       "{token:$asDF@7G, board:"xxxoo    ", result:1}"       |
-    |  &lt;--------------------------------------------------------  |
+    |       {token:"$asDF@7G", board:"xxxoo    ", winner:1}       |
+    |  &lt;&lt;&lt;------------------------------------------------------  |
     |                                                             |
     |                                                             |
-    |       "{history:"24130", log:"", result:1, player:2}"       |
-    |  &lt;--------------------------------------------------------  |
+    |        {history:"24130", log:"", winner:1, player:2}        |
+    |  &lt;&lt;&lt;------------------------------------------------------  |
     |                                                             |
                             DISCONNECTION
 
@@ -67,7 +67,7 @@ A game basically consist of three steps:
 
 (i) The AI client connects to the game server (host ??? and port ???)
 
-(ii) The AI client sends a string encapsulating a JSON object (henceforth the "request"). This request must have the field "game" (see [Supported Games section](#games)). E.g.: "{game:checkers}" 
+(ii) The AI client sends a string encapsulating a JSON object (henceforth the "request"). This request must have the field "game" (see [Supported Games section](#games)). E.g.: `{game:"checkers"}`
 
 (iii) The server sends a string encapsulating a JSON object (henceforth the "acknowledgment"). This acknowledgment has the following fields:
 
@@ -86,7 +86,7 @@ A game basically consist of three steps:
   </tr>
 </table>
 
-An example acknowledgement would be "{name:tictactoe, player:2, timelimit:5}".
+An example acknowledgement would be `{name:"tictactoe", player:2, timelimit:5}`.
 
 (iv) The server sends a string encapsulating a JSON object (henceforth the "game state"). This game state has the following fields:
 <table>
@@ -110,7 +110,7 @@ An example acknowledgement would be "{name:tictactoe, player:2, timelimit:5}".
   </tr>
 </table>
 
-An example of game state would be "{player:2, board:"xoxoxo   ", result:0, history:[0,1,2,3,4,5], log:""}.
+An example of game state would be `{player:2, board:"xoxoxo   ", winner:0, history:[0,1,2,3,4,5], log:""}`.
 
 (v) The AI player sends the server a move (see [supported games section](#games) for the representation of moves for the different games)
 
@@ -125,7 +125,7 @@ Steps (iv) and (v) are repeated until the game is over.
   <tr>
     <td>checkers (i.e. English draughts)</td>
     <td>A 64 char-long string. Char position runs from left to right, top to bottom (e.g. position 10 represents the third square from the left in the second row from the top). Spaces (' ') represent empty squares, 'b' represents a player 1 pawn, 'B' represents a player 1 king. 'r' and 'R' are the same for player 2.</td>
-    <td>A string encapsulating a 2 elements-long array with the beginning index and the end index (e.g. "[0,9]").</td>
+    <td>A string encapsulating a 2 elements-long array with the beginning index and the end index (e.g. `[0,9]`).</td>
   </tr>
   <tr>
     <td>tictactoe</td>
