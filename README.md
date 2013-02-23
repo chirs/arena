@@ -125,7 +125,7 @@ Steps (iv) and (v) are repeated until the game is over.
   <tr>
     <td>checkers (i.e. English draughts)</td>
     <td>A 64 char-long string. Char position runs from left to right, top to bottom (e.g. position 10 represents the third square from the left in the second row from the top). Spaces (' ') represent empty squares, 'b' represents a player 1 pawn, 'B' represents a player 1 king. 'r' and 'R' are the same for player 2.</td>
-    <td>A string encapsulating a 2 elements-long array with the beginning index and the end index (e.g. `[0,9]`).</td>
+    <td>A list of integers holding a pawn's starting position and the visited squares (e.g. [1,10] or [24, 42, 60, 45])</td>
   </tr>
   <tr>
     <td>tictactoe</td>
@@ -154,8 +154,7 @@ To run the test suite:
 `$ python3 test/test.py localhost 12345`
 
 ## Wish List
-* Better handling of client crash
-* Handle multiple checkers jumps in one turn 
+* Better handling of client crash (i.e. implementing the "token queue" design)
 * Write clients in different languages
 * Improve the test suite
 * Documentation
