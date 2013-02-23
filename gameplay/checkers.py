@@ -63,6 +63,9 @@ class Checkers(Game):
             return 2
         elif self.moves_without_capture >50:
             return -1
+        elif not self.moves(self.player_mapping[self.current_player]):
+            # Player is stuck; no more moves, lose
+            return 3 - self.current_player
         else:
             return 0
 
@@ -112,6 +115,7 @@ class Checkers(Game):
         """
         Verify that a move is legal.
         """
+
         # Check for out-of-bounds moves
         if any([pos<0 or pos>63 for pos in move]):
             return False
@@ -124,18 +128,13 @@ class Checkers(Game):
         if self.board[start_position].lower() != player:
             return False
 
-        # Check if all visited squares are empty
-        if any([self.board[square] != ' ' for square in visited_squares]):
-            return False
-
         # Check for forced jumps.
         valid_captures = self.captures(player)
         if valid_captures:
             return move in valid_captures
         else:
             direction = self.get_direction(player)
-            moves = self.moves(start_position, direction)
-            return move in moves#self.moves(start_position, direction)
+            return move in self.moves_(start_position)
 
     def captures(self, player):
         """
@@ -171,7 +170,10 @@ class Checkers(Game):
 
         # Make sure there is a captured pawn
         end_positions = [pos for pos in end_positions if board[(start_pos+pos)//2].lower() == opponent]
-
+        
+        # Make sure the end position is an empty sqare
+        end_positions = [pos for pos in end_positions if board[pos].lower() == ' ']
+        
         # Handle direction of play
         if direction == 1:
             end_positions = [pos for pos in end_positions if pos > start_pos]
@@ -181,16 +183,27 @@ class Checkers(Game):
         paths = []
         for end_pos in end_positions:
             new_path = path + [end_pos]
-            paths.append(self.captures_(new_path, self.apply_move(self.board, new_path)))
+            return self.captures_(new_path, self.apply_move(self.board, new_path))
         else:
-            paths.append(path)
+            return [path]
 
-        return paths
-    
-    def moves(self, start_position, direction):
+    def moves(self, player):
         """
-        All potential non-capture moves (1 diagonal square away); no collision detection
+        All potential non-capture moves (1 diagonal square away)
         """
+        positions = [i for i, char in enumerate(self.board) if char.lower() == player]
+        moves = []
+        for pos in positions:
+            moves += self.moves_(pos)
+        return moves
+
+    def moves_(self, start_position):
+        """
+        All potential non-capture moves (1 diagonal square away)
+        for a given start position
+        """
+        player = self.board[start_position]
+        direction = self.get_direction(player)
 
         # Handle left and right borders
         if start_position % 8 == 0:
@@ -202,6 +215,9 @@ class Checkers(Game):
 
         # Handle bottom and top borders
         end_positions = [pos for pos in end_positions if 0 <= pos <= 63]
+
+        # Make sure end position is free
+        end_positions = [pos for pos in end_positions if self.board[pos] == ' ']
 
         # Handle direction of play
         if direction == 1:

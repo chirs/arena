@@ -16,18 +16,18 @@ def test_case(host, port, case):
     sockets = [socket1, socket2]
 
     # Send play requests, receive acknowledgments
-    params = {'game':case['name']}
+    params = {'game':case['game']}
     for i, socket_ in enumerate(sockets):
         socket_.sendall(json.dumps(params).encode())
         msg = socket_.recv(10000).decode()
         ack = json.loads(msg)
 
         # Check acknowledgment is correct
-        expected = {'name':case['name'], 'player':i+1, 'timelimit':5}
+        expected = {'name':case['game'], 'player':i+1, 'timelimit':5}
         try:
             assert(ack == expected)
         except AssertionError:
-            print("Incorrect acknowledgment:", ack, "!=", expected, "!!!")
+            print("\nIncorrect acknowledgment:\n", ack, "!=", expected, "!!!")
             
             [s.close() for s in sockets] # Close sockets
             return False
@@ -49,8 +49,7 @@ def test_case(host, port, case):
             assert(state['player'] == player)
             assert(state['history'] == case['history'][:i])
         except AssertionError:
-            print("Game server returned incorrect player or history")
-            # Close sockets
+            print("\nGame server returned incorrect player or history")
             [s.close() for s in sockets] # Close sockets
             return False
 
@@ -67,8 +66,7 @@ def test_case(host, port, case):
     try:
         assert(outcome==case['result'])
     except AssertionError:
-        print("Incorrect game outcome; expected", case['result'], ", got",outcome)
-        # Close sockets
+        print("\nIncorrect game outcome;\n expected", case['result'], ", got",outcome)
         [s.close() for s in sockets] # Close sockets
         return False
 
@@ -86,4 +84,11 @@ if __name__ == "__main__":
     results = [test_case(host, int(port), case) for case in cases]
 
     print("\nPassed", sum(results), "out of", len(results), "tests\n")
+    
+    def pretty_print(caseID, game):
+        print("Failed test: caseID:", caseID, ", game:", game)
+
+    [pretty_print(cases[i]["caseID"], cases[i]["game"]) for i, result in enumerate(results) if not result]
+
+    print()
 
