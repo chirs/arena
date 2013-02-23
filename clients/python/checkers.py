@@ -20,17 +20,17 @@ def get_move(state):
     for position in positions:
         if direction == 1:
             if position % 8 != 0 and board[position + 7] == ' ':
-                return (position, position + 7)
+                return [position, position + 7]
             elif position % 8 != 7 and board[position + 9] == ' ':
-                return (position, position + 9)
+                return [position, position + 9]
         else:
             if position % 8 != 7 and board[position - 7] == ' ':
-                return (position, position - 7)
+                return [position, position - 7]
             elif position % 8 != 0 and board[position - 9] == ' ':
-                return (position, position - 9)
+                return [position, position - 9]
 
     # Couldnt find one dumb move, return anything
-    return  (1,8)
+    return  [1,8]
 
 if __name__ == "__main__":
     [_, host, port] = sys.argv
