@@ -47,43 +47,41 @@ class ConnectFour(Game):
     def is_tie(self):
         return self.board.count(' ') == 0
 
+
     @classmethod
-    def get_solutions(cls):
+    def get_solutions(cls):  
+        # This method could use a better name.        
         """
-        Cache and eturn a list of all possible winning runs  (e.g. [[(0,0), (1,0), (2,0), (3,0)], [(0,0), (0,1)...]
+        Cache and return a list of all possible winning runs  (e.g. [[(0,0), (1,0), (2,0), (3,0)], [(0,0), (0,1)...]
         """
-        # This method could use a better name.
-        
+
         if cls.cached_solutions is not None:
             return cls.cached_solutions
 
+        def generate_run(coords, x_direction, y_direction):
+            # Generate a list of coordinates in a specified pair of directions.
+            a, b = coords
+            l = [(a + i * x_direction , b + i * y_direction) for i in range(4)]
+            valid = all([is_valid(e) for e in l])
+            if valid:
+                return l
+            else:
+                return []
+            
+        def generate_runs_for_cell(coords):
+            runs = [generate_run(coords, 1, 0), generate_run(coords, 0, 1), generate_run(coords, 1, 1), generate_run(coords, 1, -1)]
+            return [e for e in runs if e]
+            
+        solutions = []
+        for i in range(0, 42):
+            coords = index2coords(i)
+            runs = generate_runs_for_cell(coords)
+            solutions.extend(runs)
 
-        seq = lambda start, end: range(start, end+1)
-        rows = 6
-        columns = 7
-        run = 4
-
-        #solutions = []
-        #for cell in range(0, 42):
-        #    cell_solutions = generate_cell_solutions(cell)
-        #    solutions.extend(cell_solutions)
-
-        # Rework the logic for generating these.
-        horizontal_solutions = [[(start_r, c) for c in range(start_c, start_c+run)]
-                                   for start_r in range(rows)
-                                   for start_c in seq(0, columns-run)]
-        vertical_solutions = [[(r, start_c) for r in range(start_r, start_r+run)]
-                                   for start_r in seq(0, rows-run)
-                                   for start_c in range(columns)]
-        diagonal_solutions_down_right = [[(r, c) for r,c in zip(range(start_r, start_r+run), range(start_c, start_c+run))]
-                                   for start_r in seq(0, rows-run)
-                                   for start_c in seq(0, columns-run)]
-        diagonal_solutions_down_left = [[(r, c) for r,c in zip(range(start_r, start_r+run), reversed(range(start_c, start_c+run)))]
-                                   for start_r in seq(0, rows-run)
-                                   for start_c in seq(0, columns-run)]
-        solutions = sum([horizontal_solutions, vertical_solutions, diagonal_solutions_down_right, diagonal_solutions_down_left], [])
-        cls.cached_solutions = [[coords2index(pos) for pos in solution] for solution in solutions]
+        cls.cached_solutions = [[coords2index(pos) for pos in solution] for solution in solutions]            
         return cls.cached_solutions
+    
+
 
     def result(self):
         if self.is_tie():
@@ -95,11 +93,5 @@ class ConnectFour(Game):
                     color = values.pop()
                     if color != ' ':
                         return self.color_mapping[color]
-                
-                """
-                Pretty sure this logic is wrong.
-                if all(self.board[index] for index in solution):
-                    color = self.board[solution[0]]
-                    return self.color_mapping[color]
-                """
+
             return 0
