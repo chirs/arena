@@ -28,32 +28,47 @@ class ConnectFour(Game):
         s = '\n'.join([self.board[i:i+7] for i in range(0, 42, 7)] + ['='*7])
         print(s)
 
-    def move_is_legal(self, column):
+    def move_legal(self, column):
         """Check that the top field for the column is open."""
         return self.board[column] == ' '
 
-    def transition(self, column, player):
+    def transition(self, move, player):
         assert player == self.current_player
-        coords = [(row, column) for row in reversed(range(6))]
-        indexes = [coords2index(row_coord) for row_coord in coords]
+        coords = [(e, move) for e in reversed(range(6))]
+        indexes = [coords2index(e) for e in coords]
         for i in indexes:
             if self.board[i] == ' ':
-                self.board = self.board[:i] + self.player_mapping[player] + self.board[i:]
-                self.current_player = 3 - player
+                self.board = self.board[:i] + self.player_mapping[player] + self.board[i+1:]
+                self.current_player = 3 - self.current_player
                 return
         raise ValueError('column %d is full' % column)
 
+
     def is_tie(self):
-        return not [e for e in self.board if e == ' ']
+        return self.board.count(' ') == 0
 
     @classmethod
     def get_solutions(cls):
+        """
+        Cache and eturn a list of all possible winning runs  (e.g. [[(0,0), (1,0), (2,0), (3,0)], [(0,0), (0,1)...]
+        """
+        # This method could use a better name.
+        
         if cls.cached_solutions is not None:
             return cls.cached_solutions
+
+
         seq = lambda start, end: range(start, end+1)
         rows = 6
         columns = 7
         run = 4
+
+        #solutions = []
+        #for cell in range(0, 42):
+        #    cell_solutions = generate_cell_solutions(cell)
+        #    solutions.extend(cell_solutions)
+
+        # Rework the logic for generating these.
         horizontal_solutions = [[(start_r, c) for c in range(start_c, start_c+run)]
                                    for start_r in range(rows)
                                    for start_c in seq(0, columns-run)]
@@ -74,8 +89,17 @@ class ConnectFour(Game):
         if self.is_tie():
             return -1
         else:
-            for solution in self.get_solutions():
+            for cell_list in self.get_solutions():
+                values = set([self.board[index] for index in cell_list])
+                if len(values) == 1:
+                    color = values.pop()
+                    if color != ' ':
+                        return self.color_mapping[color]
+                
+                """
+                Pretty sure this logic is wrong.
                 if all(self.board[index] for index in solution):
                     color = self.board[solution[0]]
                     return self.color_mapping[color]
+                """
             return 0
