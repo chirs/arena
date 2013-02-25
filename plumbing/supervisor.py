@@ -51,7 +51,7 @@ def supervise(host, port, known_games):
             move = get_json(sock)
 
             try:
-                legal = match.game.move_legal(move)
+                legal = match.move_legal(move)
             except:
                 import traceback
                 traceback.print_last()
@@ -77,6 +77,7 @@ def supervise(host, port, known_games):
             complete_matches.add(match)
             for i, player in enumerate(match.players, start=1):
                 send_json(player, match.build_state(player=i, result=result))
+                send_json(player, match.post_mortem())
 
         elif moved is True:
             match.game.draw_board()
