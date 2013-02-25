@@ -1,6 +1,4 @@
 
-import sys
-
 from client import play, connect
 
 
@@ -81,50 +79,6 @@ class TicTacToe(object):
             return 0
 
         
-
-
-    def minimax_score0(self, player):
-        """
-        Get the minimax score of the current position.
-        Minimax is a decision rule that finds the best 
-        strategy in a game with an adversary who acts ideally.
-        It operates by minimizing the worst case scenario.
-        """
-
-
-        # Retrieve a memoized minimax score.
-        if self.board in self.memo:
-            return self.memo[self.board]
-
-        # If the game is over, return the board's utility from
-        # the perspective of player 1.
-        if self.is_over():
-            utility = self.utility()
-            if player != 1:
-                utility = -1 * utility
-
-        # Otherwise, compute the value of the row below you.
-        else:
-            moves = self.legal_moves() # Generate the next layer of the decision tree.
-            states = [self.transition(move) for move in moves] # Create the nodes for this tree.
-            values = [e.minimax_score(player) for e in states] # Calculate minimax values for each of the states.
-
-            # Get the minimax values for the player we are using.
-            # (If the player is 2 instead of 1, just reverse all values.)
-            if player != 1:
-                values = [-1 * e for e in values]
-
-            # Combine the possible minimax values into a terminal value.
-            # A player will always choose the maximum value, so simply compute a
-            # maximum.
-            utility = max(values)
-
-        # Memoize and return the discovered result.
-        self.memo[self.board] = utility
-        return utility
-
-
-
     def minimax_score(self):
         """
         Get the minimax score of the current position.
@@ -196,10 +150,9 @@ def play_tictactoe(host, port):
     return play(sock, get_move)
 
 def get_move(state):
-    #import pdb; pdb.set_trace()
     board = state['board']
     t = TicTacToe(board)
-    move = t.minimax_move(t.current_player)
+    move = t.minimax_move()
     return move
     
 
