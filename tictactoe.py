@@ -67,64 +67,116 @@ class TicTacToe(object):
     def is_tie(self):
         return self.board.count(' ') == 0
 
-    def over(self):
+    def is_over(self):
         return self.winner() or self.is_tie()
 
-    def board_score(self, player):
-        w = self.winner()
-        if w:
-            if w == player:
-                return 1
-            else:
-                return -1
-
+    def utility(self):  
+        # utility is from player #1's perspective (+1 if #1 wins, -1 if #1 loses)
+        winner = self.winner()
+        if winner == 1:
+            return 1
+        elif winner == 2:
+            return -1
         else:
-            if self.is_tie():
-                return 0
-            else:
-                return None
+            return 0
+
+        
+
+
+    def minimax_score0(self, player):
+        """
+        Get the minimax score of the current position.
+        Minimax is a decision rule that finds the best 
+        strategy in a game with an adversary who acts ideally.
+        It operates by minimizing the worst case scenario.
+        """
+
+
+        # Retrieve a memoized minimax score.
+        if self.board in self.memo:
+            return self.memo[self.board]
+
+        # If the game is over, return the board's utility from
+        # the perspective of player 1.
+        if self.is_over():
+            utility = self.utility()
+            if player != 1:
+                utility = -1 * utility
+
+        # Otherwise, compute the value of the row below you.
+        else:
+            moves = self.legal_moves() # Generate the next layer of the decision tree.
+            states = [self.transition(move) for move in moves] # Create the nodes for this tree.
+            values = [e.minimax_score(player) for e in states] # Calculate minimax values for each of the states.
+
+            # Get the minimax values for the player we are using.
+            # (If the player is 2 instead of 1, just reverse all values.)
+            if player != 1:
+                values = [-1 * e for e in values]
+
+            # Combine the possible minimax values into a terminal value.
+            # A player will always choose the maximum value, so simply compute a
+            # maximum.
+            utility = max(values)
+
+        # Memoize and return the discovered result.
+        self.memo[self.board] = utility
+        return utility
 
 
 
     def minimax_score(self):
-        #print len(self.memo)
+        """
+        Get the minimax score of the current position.
+        Minimax is a decision rule that finds the best 
+        strategy in a game with an adversary who acts ideally.
+        It operates by minimizing the worst case scenario.
+        """
 
-        player = self.current_player()
+        #if self.current_player() == 2:
+        #if self.board.count(' ') == 2:
+        #    import pdb; pdb.set_trace()
 
-        if (player, self.board) in self.memo:
-            return self.memo[(player, self.board)]
+        # Retrieve a memoized minimax score.
+        if self.board in self.memo:
+            return self.memo[self.board]
 
-        #import pdb; pdb.set_trace()
+        # If the game is over, return the board's utility from
+        # the perspective of player 1.
+        if self.is_over():
+            utility = self.utility()
 
-        score = self.board_score(player)
-        if score is not None:
-            self.memo[(player, self.board)] = score
-
-            #self.draw_board()
-            #print("Score: %s, player: %s" % (score, player))
-            return score
-
+        # Otherwise, compute the value of the row below you.
         else:
-            potential_moves = self.get_legal_moves()
-            potential_states = [self.transition(move) for move in potential_moves]
-            scores = [-1 * state.minimax_score() for state in potential_states] # Reverse because this is opponent's minimax score.
+            moves = self.legal_moves() # Generate the next layer of the decision tree.
+            states = [self.transition(move) for move in moves] # Create the nodes for this tree.
+            values = [e.minimax_score() for e in states] # Calculate minimax values for each of the states.
 
-            #self.draw_board()
-            #print("Score: %s, player: %s" % (max(scores), player))
+            if self.current_player() == 1:
+                utility = max(values)
+            else:
+                utility = min(values)
 
-            return max(scores)
+        # Memoize and return the discovered result.
+        self.memo[self.board] = utility
+        return utility
+
 
     def minimax_move(self):
-        potential_moves = self.get_legal_moves()
-        potential_states = [self.transition(move) for move in potential_moves]
-        scores = [state.minimax_score() for state in potential_states]
-        best_score = min(scores)
-        move_index = scores.index(best_score)
-        return potential_moves[move_index]
+        moves = self.legal_moves() # Generate the next layer of the decision tree.
+        states = [self.transition(move) for move in moves] # Create the nodes for this tree.
+        values = [e.minimax_score() for e in states] # Calculate minimax values for each of the states.
+
+        if self.current_player() == 1:
+            v = max(values)
+        else:
+            v = min(values)
+
+        i = values.index(v)
+        return moves[i]
 
 
-
-    def get_legal_moves(self):
+    def legal_moves(self):
         return [index for index, value in enumerate(self.board) if value == ' ']
 
     def transition(self, index):
