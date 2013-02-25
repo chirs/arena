@@ -17,6 +17,7 @@ class Match(object):
         self.log = ""
         self.timeout_limit = 5
         self.last_move_time = None
+        self.result = 0
 
     def create_game_id(self):
         s = datetime.datetime.now().isoformat().encode()
@@ -37,63 +38,63 @@ class Match(object):
         return not self.is_waiting()
 
     def get_current_socket(self):
-        current_player = self.game.current_player
-        return self.players[current_player-1]
+        return self.players[self.game.current_player-1]
 
     def move_legal(self, move):
         if move['token'] != self.move_id:
-            self.log += "Player %s submitted incorrect token" % self.game.current_player
+            self.log += "Player %s submitted incorrect token\n" % \
+                    self.game.current_player
             return False
 
-        legal = self.game.move_legal(move['move'])
-
-        if not legal:
-            self.log += "Player %s submitted illegal move %s" % \
-                                        (self.game.current_player, move['move'])
-
-        return legal
+        return self.game.move_legal(move['move'])
 
     def make_move(self, move):
-        self.game.transition(move['move'], self.game.current_player)
-        self.history.append(move['move'])
-        self.set_last_move_time()
-        self.move_id = self.create_move_id()
 
-    def set_last_move_time(self, t=None):
-        if t is None:
-            t = datetime.datetime.now()
+        self.history.append(move['move'])
+
+        if self.move_legal(move):
+            self.move_id = self.create_move_id()
+            self.set_last_move_time()
+            self.game.transition(move['move'], self.game.current_player)
+        else:
+            self.log += "Player %s submitted illegal move %s\n" % \
+                                (self.game.current_player, move['move'])
+            self.result = 3 - self.game.current_player
+
+    def set_last_move_time(self):
         self.last_move_time = datetime.datetime.now()
 
+    def get_result(self):
+        if not self.result:
+            if self.time_expired():
+                self.log += "Player %s took too long to submit move\n" % \
+                        self.game.current_player
+                self.result = 3 - self.game.current_player
+
+            self.result = self.game.result()
+
+        return self.result
+ 
     def time_expired(self):
         if self.last_move_time is None:
             return False
 
         seconds = (datetime.datetime.now() - self.last_move_time).seconds
 
-        timeout = seconds > self.timeout_limit
+        result = seconds > self.timeout_limit
 
-        if timeout:
-            self.log += "Player %s took too long to submit move" % self.game.current_player
-
-        return timeout 
-
-    def build_state(self, player=None, result=None):
+    def build_state(self, player=None):
 
         player = player or self.game.current_player
-        result = result or self.game.result()
 
-        return {
-            'player': player,
-            'board': self.game.board,
-            'result': result,
-            'token': self.move_id,
-            #'score': score,
-            }
+        state = {'player': player}
+        state['board'] = self.game.board
+        state['result'] = self.get_result()
+        state['token'] = self.move_id
 
-    def post_mortem(self):
-        return {
-            'history' : self.history,
-            'log' : self.log,
-            'result': self.game.result(),
-            }
+        if self.get_result():
+            state['history'] = self.history
+            state['log'] = self.log
+
+        return state
 

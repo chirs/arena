@@ -63,23 +63,11 @@ def test_case(host, port, case):
 
         outcome = state['result']
 
-    # Receive and discard last board state
-    for socket_ in sockets:
-        _ = socket_.recv(1028).decode()
-
-    # Receive post morterm
-    if case['result']: 
-        for socket_ in sockets:
-            # Made this very large to accomodate history data.
-            msg = socket_.recv(10000).decode()
-            postmortem = json.loads(msg)
-            outcome = postmortem['result']
-
-            if postmortem['history'] != case['history']:
-                print(postmortem)
-                print("\nGame server returned wrong game history!")
-                cleanup(sockets)
-                return False
+#    # Receive last board state
+#    for socket_ in sockets:
+#        msg = sockets[player-1].recv(10000).decode()
+#        state = json.loads(msg)
+#        outcome = state['result']
 
     # Check correct game outcome
     if outcome != case['result']:
