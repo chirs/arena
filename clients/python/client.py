@@ -19,16 +19,19 @@ def play(sock, move_function):
 
     while True:
         
-        msg = sock.recv(10028).decode() # Made this very large to accomodate history data.
+        msg = sock.recv(1028).decode()
         state = json.loads(msg)
         
         if state['result']:
+            # Receive and discard postmortem
+            # Made this very large to accomodate history data.
+            _ = sock.recv(10028).decode()
             print("%s wins" % state['result'])
             sock.close()
             return
 
         else:
-            move = move_function(state)
+            move = {'token':state['token'], 'move':move_function(state)}
             move_json = json.dumps(move)
             sock.sendall(move_json.encode())
 

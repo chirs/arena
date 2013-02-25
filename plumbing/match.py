@@ -8,13 +8,15 @@ class Match(object):
     """
 
     def __init__(self, gname, gobj):
+        self.game_id = self.create_game_id()
+        self.move_id = self.create_move_id()
         self.gname = gname
         self.game = gobj
         self.players = []
         self.history = []
+        self.log = ""
+        self.timeout_limit = 5
         self.last_move_time = None
-        self.game_id = self.create_game_id()
-
 
     def create_game_id(self):
         s = datetime.datetime.now().isoformat().encode()
@@ -38,11 +40,24 @@ class Match(object):
         current_player = self.game.current_player
         return self.players[current_player-1]
 
+    def move_legal(self, move):
+        if move['token'] != self.move_id:
+            self.log += "Player %s submitted incorrect token" % self.game.current_player
+            return False
+
+        legal = self.game.move_legal(move['move'])
+
+        if not legal:
+            self.log += "Player %s submitted illegal move %s" % \
+                                        (self.game.current_player, move['move'])
+
+        return legal
+
     def make_move(self, move):
-        print
-        self.game.transition(move, self.game.current_player)
-        self.history.append(move)
+        self.game.transition(move['move'], self.game.current_player)
+        self.history.append(move['move'])
         self.set_last_move_time()
+        self.move_id = self.create_move_id()
 
     def set_last_move_time(self, t=None):
         if t is None:
@@ -54,24 +69,31 @@ class Match(object):
             return False
 
         seconds = (datetime.datetime.now() - self.last_move_time).seconds
-        return False
-        return seconds > 5
+
+        timeout = seconds > self.timeout_limit
+
+        if timeout:
+            self.log += "Player %s took too long to submit move" % self.game.current_player
+
+        return timeout 
 
     def build_state(self, player=None, result=None):
 
-        if player is None:
-            player = self.game.current_player
-
-        if result is None:
-            result = self.game.result()
+        player = player or self.game.current_player
+        result = result or self.game.result()
 
         return {
             'player': player,
             'board': self.game.board,
             'result': result,
-            'move_id': self.create_move_id(),
+            'token': self.move_id,
             #'score': score,
-            'history': self.history,
+            }
 
+    def post_mortem(self):
+        return {
+            'history' : self.history,
+            'log' : self.log,
+            'result': self.game.result(),
             }
 
