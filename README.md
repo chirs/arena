@@ -167,8 +167,8 @@ To run the test suite:
 `$ python3 test/test.py localhost 12345`
 
 ## Wish List
-* Better handling of client crash (i.e. implementing the "token queue" design)
-* Write clients in different languages
-* Improve the test suite
-* Documentation
+* Bring README up to date with codebase (remove postmortem)
+* Fix commented out connect four tests cases in test suite
+* Fix main while loop in plumbing/supervisor so that in doesnt use 100% of CPU all the time
+
 
