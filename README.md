@@ -39,7 +39,7 @@ between the client (a.k.a. AI player) and the server:
     |  &lt;&lt;&lt;------------------------------------------------------  |
     |                                                             |
     |                                                             |
-    |       {token:"a8bdT%d#", board:"  x      ", result: 0}       |
+    |       {token:"a8bdT%d#", board:"  x      ", result: 0}      |
     |  &lt;&lt;&lt;------------------------------------------------------  |
     |                                                             |
     |                                                             |
@@ -55,19 +55,16 @@ between the client (a.k.a. AI player) and the server:
     |  ------------------------------------------------------&gt;&gt;&gt;  |
     |                                                             |
     |                                                             |
-    |       {token:"$asDF@7G", board:"xxxoo    ", result:1}       |
+    |       {token:"$asDF@7G", board:"xxxoo    ", result:1,       |
+    |      history:"24130", log:"Player 1 made an illegal move."} |
     |  &lt;&lt;&lt;------------------------------------------------------  |
     |                                                             |
-    |                                                             |
-    |    {history:"24130", log:"Player 1 made an illegal move.",  |
-    |          result:1 }                                         |
-    |  &lt;&lt;&lt;------------------------------------------------------  |
     |                                                             |
                             DISCONNECTION
 
 </pre>
 
-A game consists of three steps:
+A game consists of five steps:
 
 (i) The AI client connects to a game server at a given host and port.
 
@@ -98,7 +95,7 @@ An example acknowledgement would be `{name:"tictactoe", player:2, timelimit:5}`.
     <th>Field name</th><th>Details</th>
   </tr>
   <tr>
-    <td>player</td><td>1 or 2</td>
+    <td>token</td><td>A cryptic token needed to return a valid move</td>
   </tr>
   <tr>
     <td>board</td><td>board representation (see [supported games section](#games)</td>
@@ -106,28 +103,31 @@ An example acknowledgement would be `{name:"tictactoe", player:2, timelimit:5}`.
   <tr>
     <td>result</td><td>-1 is tie, 0 is game ongoing, 1 is player 1 wins, 2 is player 2 wins</td>
   </tr>
-
-An example of game state would be `{player:2, board:"xoxoxo   ", winner:0, history:[0,1,2,3,4,5], log:""}`.
-
-(v) The AI player sends the server a move (see [supported games section](#games) for the representation of moves for the different games)
-
-Steps (iv) and (v) are repeated until the game is over.
-
-(vi) After the game is concluded, the server sends a final message to both clients, with a log of messages, a move history for the game, and a final
-result.
-
-<table>
   <tr>
-    <td>result</td><td>-1 is tie, 0 is game ongoing, 1 is player 1 wins, 2 is player 2 wins</td>
+    <td>history*</td><td>A list holding the sequence of moves done in the game</td>
   </tr>
   <tr>
-    <td>history</td><td>A list holding the sequence of moves done in the game</td>
-  </tr>
-  <tr>
-    <td>log</td><td>A log of miscellaneous relevant info about the game</td>
+    <td>log*</td><td>A log of miscellaneous relevant info about the game</td>
   </tr>
 </table>
 
+* The `history` and `log` fields are only send when the game is over (i.e. result != 0). An example of game state would be `{token: "g$jhe%j&", player:2, board:"xoxoxo   ", result:0}`.
+
+(v) The AI player sends the server a move inside a json. Refer to [supported games section](#games) for the representation of moves key-value for the different games. A move json has the following elements:
+<table>
+  <tr>
+    <th>Field name</th><th>Details</th>
+  </tr>
+  <tr>
+    <td>token</td><td>The cryptic token receive previously</td>
+  </tr>
+  <tr>
+    <td>move</td><td>see [supported games section](#games)</td>
+  </tr>
+</table>
+An example of move json would be `{token: "g$jhe%j&", move:[1,9]}`
+
+Steps (iv) and (v) are repeated until the game is over.
 
 ## Supported Games <a id=games></a>
 
@@ -152,8 +152,6 @@ result.
   </tr>
 </table>
 
-chess is in the pipeline, let us know if you would like to see it implemented.
-
 ## Test Suite
 
 To run the test suite:
@@ -167,6 +165,5 @@ To run the test suite:
 `$ python3 test/test.py localhost 12345`
 
 ## Wish List
-* Bring README up to date with codebase (remove postmortem)
 * Fix commented out connect four tests cases in test suite
 
