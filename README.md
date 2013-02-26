@@ -111,7 +111,7 @@ An example acknowledgement would be `{name:"tictactoe", player:2, timelimit:5}`.
   </tr>
 </table>
 
-* The `history` and `log` fields are only send when the game is over (i.e. result != 0). An example of game state would be `{token: "g$jhe%j&", player:2, board:"xoxoxo   ", result:0}`.
+\* The `history` and `log` fields are only send when the game is over (i.e. result != 0). An example of game state would be `{token: "g$jhe%j&", player:2, board:"xoxoxo   ", result:0}`.
 
 (v) The AI player sends the server a move inside a json. Refer to [supported games section](#games) for the representation of moves key-value for the different games. A move json has the following elements:
 <table>
