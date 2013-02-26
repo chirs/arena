@@ -32,7 +32,7 @@ class TicTacToe(Game):
         #return new_game
         
     def move_legal(self, move):
-        return 0 <= move <9 and self.board[move] == ' '
+        return isinstance(move, int) and 0 <= move <9 and self.board[move] == ' '
 
 
     def is_tie(self):

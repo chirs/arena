@@ -169,6 +169,4 @@ To run the test suite:
 ## Wish List
 * Bring README up to date with codebase (remove postmortem)
 * Fix commented out connect four tests cases in test suite
-* Made server fault tolerant to ill-formed json (e.g. move is a string instead of an int)
-
 

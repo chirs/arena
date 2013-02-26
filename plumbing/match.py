@@ -1,4 +1,5 @@
 
+import json
 import datetime
 import hashlib
 
@@ -41,6 +42,14 @@ class Match(object):
         return self.players[self.game.current_player-1]
 
     def move_legal(self, move):
+        if not isinstance(move, dict):
+            return False
+        if 'move' not in move:
+            self.log += "Key \'move\' not in move json\n" 
+            return False
+        if 'token' not in move:
+            self.log += "Move json does not contain \'token\'\n" 
+            return False
         if move['token'] != self.move_id:
             self.log += "Player %s submitted incorrect token\n" % \
                     self.game.current_player
@@ -48,17 +57,22 @@ class Match(object):
 
         return self.game.move_legal(move['move'])
 
-    def make_move(self, move):
+    def make_move(self, msg):
 
-        self.history.append(move['move'])
+        try:
+            move = json.loads(msg)
+        except ValueError:
+            self.log += "Player %s submitted ill-formed json\n" % self.game.current_player
+            self.result = 3 - self.game.current_player
+            return
 
         if self.move_legal(move):
             self.move_id = self.create_move_id()
-            self.set_last_move_time()
+            self.history.append(move['move'])
             self.game.transition(move['move'], self.game.current_player)
+            self.set_last_move_time()
         else:
-            self.log += "Player %s submitted illegal move %s\n" % \
-                                (self.game.current_player, move['move'])
+            self.log += "Player %s submitted illegal move\n" % self.game.current_player
             self.result = 3 - self.game.current_player
 
     def set_last_move_time(self):
