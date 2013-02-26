@@ -116,6 +116,10 @@ class Checkers(Game):
         Verify that a move is legal.
         """
 
+        # Make sure move is a list of ints
+        if not isinstance(move, list) or not all([isinstance(i, int) for i in move]):
+            return False
+
         # Check for out-of-bounds moves
         if any([pos<0 or pos>63 for pos in move]):
             return False

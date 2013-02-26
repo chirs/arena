@@ -1,9 +1,9 @@
 
 import json
 import select
+import socket
 
 from .match import Match
-from .server import make_listen_sock, get_json, send_json
 
 def supervise(host, port, known_games):
 
@@ -28,33 +28,35 @@ def supervise(host, port, known_games):
             acknowledgment['player'] = 1
 
         # Send acknowledgment
-        send_json(player_sock, acknowledgment)
+        player_sock.sendall(json.dumps(acknowledgment).encode())
 
         match_list[player_sock] = match
         match.add_player(player_sock)
 
         if match.is_ready():
-            send_json(match.players[0], match.build_state())
+            match.players[0].sendall(json.dumps(match.build_state()).encode())
             match.set_last_move_time()
 
     def handle_match(match, sock, complete_matches):
         # Side effects!
 
-        move = get_json(sock)
+        move = sock.recv(1028).decode()
         match.make_move(move)
         match.game.draw_board()
 
         if match.get_result() != 0:
             complete_matches.add(match)
             for i, player in enumerate(match.players, start=1):
-                send_json(player, match.build_state(player=i))
+                player.sendall(json.dumps(match.build_state(player=i)).encode())
         else:
-            send_json(match.get_current_socket(), match.build_state())
+            match.get_current_socket().sendall(json.dumps(match.build_state()).encode())
 
     active_matches = {} # dict with key = socket, value = game object
     complete_matches = set()
 
-    listen_sock = make_listen_sock(host, port)
+    listen_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    listen_sock.bind((host, port))
+    listen_sock.listen(100) 
 
     while True:
 
