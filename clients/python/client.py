@@ -19,13 +19,9 @@ def play(sock, move_function):
 
     while True:
         
-        msg = sock.recv(1028).decode()
+        msg = sock.recv(10000).decode()
         state = json.loads(msg)
-        
         if state['result']:
-            # Receive and discard postmortem
-            # Made this very large to accomodate history data.
-            _ = sock.recv(10028).decode()
             print("%s wins" % state['result'])
             sock.close()
             return
