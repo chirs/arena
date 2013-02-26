@@ -169,6 +169,6 @@ To run the test suite:
 ## Wish List
 * Bring README up to date with codebase (remove postmortem)
 * Fix commented out connect four tests cases in test suite
-* Fix main while loop in plumbing/supervisor so that in doesnt use 100% of CPU all the time
+* Made server fault tolerant to ill-formed json (e.g. move is a string instead of an int)
 
 
