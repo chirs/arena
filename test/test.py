@@ -63,11 +63,11 @@ def test_case(host, port, case):
 
         outcome = state['result']
 
-#    # Receive last board state
-#    for socket_ in sockets:
-#        msg = sockets[player-1].recv(10000).decode()
-#        state = json.loads(msg)
-#        outcome = state['result']
+    # Receive last board state
+    for socket_ in sockets:
+        msg = socket_.recv(10000).decode()
+        state = json.loads(msg)
+        outcome = state['result']
 
     # Check correct game outcome
     if outcome != case['result']:
