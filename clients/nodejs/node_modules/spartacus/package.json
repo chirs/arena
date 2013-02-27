@@ -1,0 +1,12 @@
+{
+  "author": "Daniel Mendel <daniel@danielespeset.com> (https://danielmendel.github.com)",
+  "name": "spartacus",
+  "description": "A client for arena: https://github.com/chirs/arena",
+  "version": "0.0.0",
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
