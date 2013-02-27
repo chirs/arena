@@ -51,7 +51,9 @@ def supervise(host, port, known_games):
         else:
             match.get_current_socket().sendall(json.dumps(match.build_state()).encode())
 
-    active_matches = {} # dict with key = socket, value = game object
+
+    # Set up supervisor.
+    active_matches = {} # dict mapping socket => game object
     complete_matches = set()
 
     listen_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

@@ -1,6 +1,6 @@
 
-import json
 import datetime
+import json
 import hashlib
 
 class Match(object):
@@ -11,8 +11,8 @@ class Match(object):
     def __init__(self, gname, gobj):
         self.game_id = self.create_game_id()
         self.move_id = self.create_move_id()
-        self.gname = gname
-        self.game = gobj
+        self.gname = gname # Name of the game, e.g. checkers
+        self.game = gobj # Game objects, e.g. ConnectFour(' ' * 42)
         self.players = []
         self.history = []
         self.log = ""
@@ -33,7 +33,7 @@ class Match(object):
         self.players.append(socket)
 
     def is_waiting(self):
-        return len(self.players) < 2
+        return len(self.players) < 2 
 
     def is_ready(self):
         return not self.is_waiting()
@@ -94,21 +94,24 @@ class Match(object):
             return False
 
         seconds = (datetime.datetime.now() - self.last_move_time).seconds
-
-        result = seconds > self.timeout_limit
+        return seconds > self.timeout_limit
 
     def build_state(self, player=None):
 
         player = player or self.game.current_player
 
-        state = {'player': player}
-        state['board'] = self.game.board
-        state['result'] = self.get_result()
-        state['token'] = self.move_id
+        state = {
+            'player': player,
+            'board': self.game.board,
+            'result': self.get_result(),
+            'token': self.move_id,
+                 }
 
         if self.get_result():
-            state['history'] = self.history
-            state['log'] = self.log
+            state.update({
+                    'history': self.history,
+                    'log': self.log,
+                    })
 
         return state
 
