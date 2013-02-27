@@ -87,10 +87,6 @@ class TicTacToe(object):
         It operates by minimizing the worst case scenario.
         """
 
-        #if self.current_player() == 2:
-        #if self.board.count(' ') == 2:
-        #    import pdb; pdb.set_trace()
-
         # Retrieve a memoized minimax score.
         if self.board in self.memo:
             return self.memo[self.board]
