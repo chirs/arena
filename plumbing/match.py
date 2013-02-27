@@ -1,6 +1,5 @@
 
 import datetime
-import json
 import hashlib
 
 class Match(object):
@@ -15,7 +14,7 @@ class Match(object):
         self.game = gobj # Game objects, e.g. ConnectFour(' ' * 42)
         self.players = []
         self.history = []
-        self.log = ""
+        self._log = ""
         self.timeout_limit = 5
         self.last_move_time = None
         self.result = 0
@@ -24,6 +23,14 @@ class Match(object):
         s = datetime.datetime.now().isoformat().encode()
         return hashlib.sha1(s).hexdigest()
 
+    def log(self, s):
+        self._log += s
+        self._log += '\n'
+
+    def get_log(self):
+        return self._log
+
+
     def create_move_id(self):
         s = datetime.datetime.now().isoformat()
         s2 = ("%s %s" % (self.game_id, s)).encode()
@@ -31,6 +38,7 @@ class Match(object):
 
     def add_player(self, socket):
         self.players.append(socket)
+        return len(self.players)
 
     def is_waiting(self):
         return len(self.players) < 2 
@@ -45,26 +53,19 @@ class Match(object):
         if not isinstance(move, dict):
             return False
         if 'move' not in move:
-            self.log += "Key \'move\' not in move json\n" 
+            self.log("Key \'move\' not in move json")
             return False
         if 'token' not in move:
-            self.log += "Move json does not contain \'token\'\n" 
+            self.log("Move json does not contain \'token\'")
             return False
         if move['token'] != self.move_id:
-            self.log += "Player %s submitted incorrect token\n" % \
-                    self.game.current_player
+            self.log("Player %s submitted incorrect token" %
+                    self.game.current_player)
             return False
 
         return self.game.move_legal(move['move'])
 
-    def make_move(self, msg):
-
-        try:
-            move = json.loads(msg)
-        except ValueError:
-            self.log += "Player %s submitted ill-formed json\n" % self.game.current_player
-            self.result = 3 - self.game.current_player
-            return
+    def make_move(self, move):
 
         if self.move_legal(move):
             self.move_id = self.create_move_id()
@@ -72,7 +73,7 @@ class Match(object):
             self.game.transition(move['move'], self.game.current_player)
             self.set_last_move_time()
         else:
-            self.log += "Player %s submitted illegal move\n" % self.game.current_player
+            self.log("Player %s submitted illegal move" % self.game.current_player)
             self.result = 3 - self.game.current_player
 
     def set_last_move_time(self):
@@ -81,11 +82,11 @@ class Match(object):
     def get_result(self):
         if not self.result:
             if self.time_expired():
-                self.log += "Player %s took too long to submit move\n" % \
-                        self.game.current_player
+                self.log("Player %s took too long to submit move" %
+                        self.game.current_player)
                 self.result = 3 - self.game.current_player
-
-            self.result = self.game.result()
+            else:
+                self.result = self.game.result()
 
         return self.result
  
@@ -110,7 +111,7 @@ class Match(object):
         if self.get_result():
             state.update({
                     'history': self.history,
-                    'log': self.log,
+                    'log': self.get_log(),
                     })
 
         return state
