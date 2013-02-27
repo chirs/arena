@@ -64,6 +64,7 @@ def supervise(host, port, known_games):
     complete_matches = set()
 
     listen_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    listen_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     listen_sock.bind((host, port))
     listen_sock.listen(100) 
 
