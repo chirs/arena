@@ -11,9 +11,28 @@ def send_json(sock, data):
 
 class Supervisor():
 
-    def handle_new_connection(self):
 
+
+    def __init__(self, host, port, known_games):
+        # Set up supervisor.
+        self.known_games = known_games
+        self.active_matches = {} # dict mapping socket => game object
+        self.complete_matches = set()
+
+        self.pending_sockets = [] # Sockets not yet connected to a game.
+
+        self.listen_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.listen_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.listen_sock.bind((host, port))
+        self.listen_sock.listen(100)
+
+
+
+    def handle_new_connection(self):
         player_sock, _ = self.listen_sock.accept()
+        self.pending_sockets.append(player_sock)
+
+    def handle_game_request(self, player_sock):
 
         # Receive play request
         request = player_sock.recv(1028).decode()
@@ -29,6 +48,8 @@ class Supervisor():
         self.active_matches[player_sock] = match
         player_number = match.add_player(player_sock)
 
+        self.pending_sockets.remove(player_sock)
+
         # build and send acknowledgment
         acknowledgment = {
             'name': game_string,
@@ -40,6 +61,7 @@ class Supervisor():
         if match.is_ready():
             send_json(match.players[0], match.build_state())
             match.set_last_move_time()
+
 
     def handle_match_message(self, sock):
         match = self.active_matches[sock]
@@ -63,30 +85,23 @@ class Supervisor():
             send_json(match.get_current_socket(), match.build_state())
 
 
-    def __init__(self, host, port, known_games):
-        # Set up supervisor.
-        self.known_games = known_games
-        self.active_matches = {} # dict mapping socket => game object
-        self.complete_matches = set()
-
-        self.listen_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.listen_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.listen_sock.bind((host, port))
-        self.listen_sock.listen(100)
-
     def supervise(self):
         while True:
             self.loop(5)
 
     def loop(self, timeout):
-        # Iterate active matches.
+
         current_sockets = [e.get_current_socket() for e in set(self.active_matches.values())]
-        readable_sockets, _, _ = select.select(current_sockets + [self.listen_sock], [], [], timeout)
+
+        all_sockets = current_sockets + self.pending_sockets + [self.listen_sock]
+
+        readable_sockets, _, _ = select.select(all_sockets, [], [], timeout)
 
         for sock in readable_sockets:
             if sock == self.listen_sock:
-                # New connection.
                 self.handle_new_connection()
+            elif sock in self.pending_sockets:
+                self.handle_game_request(sock)
             else:
                 self.handle_match_message(sock)
 
