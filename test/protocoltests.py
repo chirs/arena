@@ -104,7 +104,7 @@ def run_tests(known_games):
 
     from .cases import cases
 
-    results = {case['case_id']: test_case(host, int(port), case) for case in cases}
+    results = [(case['case_id'], test_case(host, int(port), case)) for case in cases]
 
     stop = True
     t.join()

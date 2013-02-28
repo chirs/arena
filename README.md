@@ -156,13 +156,7 @@ Steps (iv) and (v) are repeated until the game is over.
 
 To run the test suite:
 
-(i) Start the game server on a host and port in one terminal:
-
-`$ python3 supervise.py localhost 12345`
-
-(ii) In another terminal, start the test suite on the same host and port:
-
-`$ python3 test/test.py localhost 12345`
+`$ python3 runtests.py `
 
 ## Wish List
 * Fix commented out connect four tests cases in test suite

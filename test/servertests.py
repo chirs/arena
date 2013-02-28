@@ -58,14 +58,15 @@ def run_tests():
         ('test_incorrect_token', [(1,'{"game":"tictactoe"}'), (2, '{"game": "tictactoe"}'), (1, '{"token": "incorrect token", "move": 0}')]),
         ]
     
-    results = {}
+    results = []
 
     port = 8123
 
     for name, move_list in tests:
         port += 1
         sys.stderr.write("Running test %s\n\n" % name)
-        results[name] = server_alive_after_send('localhost', port, move_list)
+        result = server_alive_after_send('localhost', port, move_list)
+        results.append((name, result))
 
     sys.stderr.close()
     sys.stderr = old_stderr

@@ -15,11 +15,14 @@ GAMES = {
 }
 
 if __name__ == '__main__':
-    results = {}
-    results.update(protocoltests.run_tests(GAMES))
-    results.update(servertests.run_tests())
+    results = []
+    results.extend(protocoltests.run_tests(GAMES))
+    results.extend(servertests.run_tests())
 
-    print("\nPassed", len([e for e in results.values() if e]), "out of", len(results), "tests")
+    print("\nPassed", len([e for e in results if e[1]]), "out of", len(results), "tests")
+
+    for name, result in results:
+        print("Test %s: %s" % (name, result))
 
     """
     def pretty_print(case_id, game):
