@@ -88,8 +88,8 @@ if __name__ == "__main__":
 
     results = [test_case(host, int(port), case) for case in cases]
 
-    print("\nPassed", sum(results), "out of", len(results), "tests\n")
-    
+    print("\nPassed", sum(results), "out of", len(results), "tests")
+
     def pretty_print(case_id, game):
         print("Failed test: case_id:", case_id, ", game:", game)
 

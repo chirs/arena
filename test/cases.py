@@ -9,7 +9,7 @@ cases = [
         'history': [0,4,6,3,5,1,7,8,2],
         'result': -1,
     },
-    
+
     {
         'case_id': 2,
         'game': 'tictactoe',
