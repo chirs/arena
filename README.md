@@ -122,7 +122,7 @@ An example acknowledgement would be `{name:"tictactoe", player:2, timelimit:5}`.
     <td>token</td><td>The cryptic token receive previously</td>
   </tr>
   <tr>
-    <td>move</td><td>supported games section</td>
+    <td>move</td><td>refer to supported games section</td>
   </tr>
 </table>
 An example of move json would be `{token: "g$jhe%j&", move:[1,9]}`
