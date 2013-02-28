@@ -36,9 +36,26 @@ class Supervisor():
 
     def handle_game_request(self, player_sock):
 
+        def ill_formed(msg):
+            send_json(player_sock, {"log": msg })
+            player_sock.close()
+            self.pending_sockets.remove(player_sock)
+
+
         # Receive play request
         request = player_sock.recv(1028).decode()
-        request_json = json.loads(request)
+
+        try:
+            request_json = json.loads(request)
+        except ValueError:
+            return ill_formed("Game request is not json.")
+
+        if 'game' not in request_json:
+            return ill_formed("Please specify a game.")
+            
+        if request_json['game'] not in self.known_games:
+            return ill_formed("We don't know that game.")
+
         game_string = request_json['game']
 
         eligible_matches = [e for e in self.active_matches.values() if e.is_waiting_for_player() and e.gname == game_string]

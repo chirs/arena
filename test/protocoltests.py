@@ -1,7 +1,13 @@
 
-import sys
 import json
 import socket
+import sys
+import threading
+import time
+
+from plumbing.supervisor import Supervisor
+
+
 
 def setup(host, port):
 
@@ -80,20 +86,29 @@ def test_case(host, port, case):
 
     return True
 
-if __name__ == "__main__":
+def run_tests(known_games):
+    host, port = 'localhost', 10000
 
-    _, host, port = sys.argv
+    server = Supervisor(host, port, known_games, silent=True)
 
-    from cases import cases
+    stop = False
 
-    results = [test_case(host, int(port), case) for case in cases]
+    def supervise():
+        while not stop:
+            server.loop(.1)
 
-    print("\nPassed", sum(results), "out of", len(results), "tests")
+    t = threading.Thread(target=supervise)    
+    t.daemon = True
+    t.start()
+    time.sleep(.3)
 
-    def pretty_print(case_id, game):
-        print("Failed test: case_id:", case_id, ", game:", game)
+    from .cases import cases
 
-    [pretty_print(cases[i]["case_id"], cases[i]["game"]) for i, result in enumerate(results) if not result]
+    results = {case['case_id']: test_case(host, int(port), case) for case in cases}
 
-    print()
+    stop = True
+    t.join()
+
+    return results
+
 
