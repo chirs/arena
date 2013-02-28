@@ -13,7 +13,7 @@ class Supervisor():
 
 
 
-    def __init__(self, host, port, known_games):
+    def __init__(self, host, port, known_games, silent=False):
         # Set up supervisor.
         self.known_games = known_games
         self.active_matches = {} # dict mapping socket => game object
@@ -25,6 +25,8 @@ class Supervisor():
         self.listen_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.listen_sock.bind((host, port))
         self.listen_sock.listen(100)
+
+        self.silent = silent
 
 
 
@@ -75,7 +77,8 @@ class Supervisor():
             match.log("Player %s submitted ill-formed json" % match.game.current_player)
             match.result = 3 - match.game.current_player
 
-        match.game.draw_board()
+        if self.silent is False:
+            print(match.game.draw_board())
 
         if match.get_result() != 0:
             self.complete_matches.add(match)

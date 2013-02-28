@@ -26,7 +26,7 @@ class ConnectFour(Game):
 
     def draw_board(self):
         s = '\n'.join([self.board[i:i+7] for i in range(0, 42, 7)] + ['='*7])
-        print(s)
+        return s
 
     def move_legal(self, column):
         """Check that the top field for the column is open."""

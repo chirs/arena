@@ -28,7 +28,7 @@ class Checkers(Game):
             s += self.board[i:i+8]
             s += '\n'
         s += '=' * 8
-        print(s)
+        return s
 
     def is_king(self, char):
         return not char.islower()

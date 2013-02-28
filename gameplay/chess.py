@@ -54,7 +54,7 @@ class Chess(Game):
             s += self.board[i:i+8]
             s += '\n'
         s += '=' * 8
-        print(s)
+        return s
 
 
     def get_position(self, index):

@@ -17,10 +17,12 @@ class TicTacToe(Game):
         return ' ' * 9  
 
     def draw_board(self):
-        print(self.board[:3])
-        print(self.board[3:6])
-        print(self.board[6:9])
-        print("===")
+        s = ''
+        s += self.board[:3]
+        s += self.board[3:6]
+        s += self.board[6:9]
+        s += "==="
+        return s
 
     def transition(self, move, player):
         mark = self.player_mapping[player]
