@@ -37,6 +37,37 @@ class TestSequenceFunctions(unittest.TestCase):
         # Parent.
         self.assertTrue(TicTacToe('xx ooxxo ').minimax_score() == 0)
 
+    def _test_tictactoe_negamax_score(self):
+        # Minimax score assumes you are the next player to move.
+        # Don't call it with the wrong player argument - will not give a 
+        # trustworthy answer.
+
+
+        # o can win on next move.
+        self.assertTrue(TicTacToe('xx oo xox').negamax_score() == -1)
+
+        
+        # Verify minimax works with a complete board.
+        self.assertTrue(TicTacToe('xoxxoxoxo').negamax_score() == 0)
+
+        # Build up to a simple example.
+
+        # Game is over, x has won.
+        self.assertTrue(TicTacToe('xxxoo xo ').negamax_score() == 1) 
+
+        # Game is over, o has won.
+        self.assertTrue(TicTacToe('xx oooxox').negamax_score() == -1)
+        
+
+        # x can win on next move.
+        self.assertTrue(TicTacToe('xx oo xo ').negamax_score() == 1)
+
+        self.assertTrue(TicTacToe('xxoooxxo ').negamax_score() == 0)
+        self.assertTrue(TicTacToe('xx ooxxoo').negamax_score() == 1)
+
+        # Parent.
+        self.assertTrue(TicTacToe('xx ooxxo ').negamax_score() == 0)
+
 
     def test_tictactoe_minimax_move(self):
 
