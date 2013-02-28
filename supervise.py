@@ -1,7 +1,7 @@
 
 import sys
 
-from plumbing.supervisor import supervise
+from plumbing.supervisor import Supervisor
 from gameplay.tictactoe import TicTacToe
 from gameplay.checkers import Checkers
 from gameplay.connect4 import ConnectFour
@@ -14,5 +14,5 @@ GAMES = {
 
 if __name__ == '__main__':
     _, host, port = sys.argv
-    supervise(host, int(port), GAMES)
+    Supervisor(host, int(port), GAMES).supervise()
 
