@@ -18,8 +18,11 @@ def server_alive_after_send(msg):
             server.loop(.1)
 
     t = threading.Thread(target=supervise)
+    t.daemon = True
     t.start()
     time.sleep(.2)
+
+    msg = msg.encode()
 
     s = socket.socket()
     s.connect((ip, port))
@@ -37,6 +40,6 @@ test_right_game = lambda: server_alive_after_send('{"game":"tictactoe"}')
 
 tests = [(f, name) for name, f in locals().items() if callable(f) and 'test_' in name]
 for f, name in tests:
-    print name, f()
+    print(name, f())
 
 sys.stderr.close()
