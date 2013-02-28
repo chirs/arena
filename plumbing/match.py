@@ -40,11 +40,11 @@ class Match(object):
         self.players.append(socket)
         return len(self.players)
 
-    def is_waiting(self):
-        return len(self.players) < 2 
+    def is_waiting_for_player(self):
+        return len(self.players) < 2
 
     def is_ready(self):
-        return not self.is_waiting()
+        return not self.is_waiting_for_player()
 
     def get_current_socket(self):
         return self.players[self.game.current_player-1]
@@ -89,7 +89,7 @@ class Match(object):
                 self.result = self.game.result()
 
         return self.result
- 
+
     def time_expired(self):
         if self.last_move_time is None:
             return False
