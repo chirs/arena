@@ -5,6 +5,9 @@ import socket
 
 from .match import Match
 
+def send_json(sock, data):
+    sock.sendall((json.dumps(data)+'\n').encode())
+
 def supervise(host, port, known_games):
 
     def handle_new_connection(listen_sock, match_list):
@@ -31,10 +34,10 @@ def supervise(host, port, known_games):
             'timelimit': 5,
             'player': player_number,
             }
-        player_sock.sendall(json.dumps(acknowledgment).encode())
+        send_json(player_sock, acknowledgment)
 
         if match.is_ready():
-            match.players[0].sendall(json.dumps(match.build_state()).encode())
+            send_json(match.players[0], match.build_state())
             match.set_last_move_time()
 
     def handle_match_message(match, sock, complete_matches):
@@ -53,9 +56,9 @@ def supervise(host, port, known_games):
         if match.get_result() != 0:
             complete_matches.add(match)
             for i, player in enumerate(match.players, start=1):
-                player.sendall(json.dumps(match.build_state(player=i)).encode())
+                send_json(player, match.build_state(player=i))
         else:
-            match.get_current_socket().sendall(json.dumps(match.build_state()).encode())
+            send_json(match.get_current_socket(), match.build_state())
 
 
 
