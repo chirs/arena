@@ -137,7 +137,6 @@ class Checkers(Game):
         if valid_captures:
             return move in valid_captures
         else:
-            direction = self.get_direction(player)
             return move in self.moves_(start_position)
 
     def captures(self, player):

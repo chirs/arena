@@ -30,7 +30,7 @@ class ConnectFour(Game):
 
     def move_legal(self, column):
         """Check that the top field for the column is open."""
-        return isinstance(column, int) and self.board[column] == ' '
+        return isinstance(column, int) and 0 <= column < 7 and self.board[column] == ' '
 
     def transition(self, move, player):
         assert player == self.current_player
